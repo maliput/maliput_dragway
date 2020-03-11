@@ -3,7 +3,7 @@
 ##############################################################################
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project(dragway LANGUAGES C CXX VERSION 3.0.0)
+project(maliput_dragway LANGUAGES C CXX VERSION 3.0.0)
 
 ##############################################################################
 # Find 3rd Party Packages
@@ -26,7 +26,7 @@ set(BUILD_SHARED_LIBS true)
 
 ament_python_install_package(${PROJECT_NAME})
 
-include(${PROJECT_SOURCE_DIR}/../cmake/DefaultCFlags.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/DefaultCFlags.cmake)
 
 ##############################################################################
 # Sources
@@ -43,7 +43,7 @@ if(BUILD_TESTING)
   find_package(ament_cmake_clang_format REQUIRED)
   enable_testing()
   add_subdirectory(test)
-  ament_clang_format(CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-format)
+  ament_clang_format(CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format)
 endif()
 
 ##############################################################################
@@ -56,7 +56,7 @@ endif()
 
 if(BUILD_DOCS)
   find_package(ament_cmake_doxygen REQUIRED)
-  ament_doxygen_generate(doxygen_dragway
+  ament_doxygen_generate(doxygen_maliput_dragway
     CONFIG_OVERLAY doc/Doxyfile.overlay.in
     DEPENDENCIES maliput
   )

@@ -10,6 +10,11 @@ target_include_directories(
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
+ament_target_dependencies(dragway_test_utilities
+  "maliput"
+  "maliput-dragway"
+)
+
 target_link_libraries(dragway_test_utilities
   dragway
   maliput::api

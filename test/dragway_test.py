@@ -18,8 +18,8 @@ from maliput.math import (
     Vector3,
     Vector4
 )
-from dragway import create_dragway
 
+from maliput_dragway.dragway import create_dragway
 
 # Instantiate and return a two-lane straight road.
 def make_test_dragway(lane_width, length):

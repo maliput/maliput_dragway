@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script runs clang-format and reformats any C++ code in 
+# This script runs clang-format and reformats any C++ code in
 # the package. It expects a .clang-format to exist within the
 # root directory of the project.  To stop a directory from being
 # reformatted, add a blank `AMENT_IGNORE` file to the root of
@@ -15,7 +15,7 @@ export PATH=$PATH:/home/$USER/.local/bin
 declare -i CLANGFORMATFAILED=0
 
 pushd $REPO_DIR
-ament_clang_format --config=./../.clang-format --reformat || CLANGFORMATFAILED=1
+ament_clang_format --config=./.clang-format --reformat || CLANGFORMATFAILED=1
 popd
 
 if [ "$CLANGFORMATFAILED" -ne "0" ]; then
