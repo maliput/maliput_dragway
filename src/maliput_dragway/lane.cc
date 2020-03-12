@@ -1,4 +1,4 @@
-#include "dragway/lane.h"
+#include "maliput_dragway/lane.h"
 
 #include <algorithm>
 #include <cmath>
@@ -10,9 +10,9 @@
 #include "maliput/common/maliput_abort.h"
 #include "maliput/math/saturate.h"
 
-#include "dragway/branch_point.h"
-#include "dragway/road_geometry.h"
-#include "dragway/segment.h"
+#include "maliput_dragway/branch_point.h"
+#include "maliput_dragway/road_geometry.h"
+#include "maliput_dragway/segment.h"
 
 using std::make_unique;
 

@@ -1,4 +1,4 @@
-#include "dragway/segment.h"
+#include "maliput_dragway/segment.h"
 
 #include <string>
 #include <utility>
@@ -6,8 +6,8 @@
 #include "maliput/api/lane.h"
 #include "maliput/common/maliput_abort.h"
 
-#include "dragway/junction.h"
-#include "dragway/lane.h"
+#include "maliput_dragway/junction.h"
+#include "maliput_dragway/lane.h"
 
 namespace maliput {
 namespace dragway {

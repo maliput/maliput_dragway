@@ -9,10 +9,10 @@
 #include "maliput/test_utilities/check_id_indexing.h"
 #include "maliput/test_utilities/maliput_types_compare.h"
 
-#include "dragway/branch_point.h"
-#include "dragway/junction.h"
-#include "dragway/lane.h"
-#include "dragway/road_geometry.h"
+#include "maliput_dragway/branch_point.h"
+#include "maliput_dragway/junction.h"
+#include "maliput_dragway/lane.h"
+#include "maliput_dragway/road_geometry.h"
 
 namespace maliput {
 namespace dragway {

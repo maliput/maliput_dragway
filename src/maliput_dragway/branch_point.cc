@@ -1,8 +1,8 @@
 #include <optional>
 
-#include "dragway/branch_point.h"
+#include "maliput_dragway/branch_point.h"
 
-#include "dragway/lane.h"
+#include "maliput_dragway/lane.h"
 
 namespace maliput {
 namespace dragway {

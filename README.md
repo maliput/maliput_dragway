@@ -1,6 +1,6 @@
-# `maliput-dragway`
+# `maliput_dragway`
 
-Maliput-dragway is an implementation of Maliput's API that allows users to instantiate
+Maliput_dragway is an implementation of Maliput's API that allows users to instantiate
 a multilane dragway.  All lanes in the dragway are straight, parallel, and in
 the same segment. The ends of each lane are connected together via a "magical
 loop" that results in vehicles traveling on the Dragway's lanes instantaneously
@@ -20,16 +20,16 @@ cd path/to/my/workspace
 source ./bringup
 ```
 
-3. Build maliput-dragway package and its dependencies:
+3. Build maliput_dragway package and its dependencies:
 
   - If not building drake from source:
 
    ```sh
-   colcon build --packages-up-to maliput-dragway
+   colcon build --packages-up-to maliput_dragway
    ```
 
   - If building drake from source:
 
    ```sh
-   colcon build --cmake-args -DWITH_PYTHON_VERSION=3 --packages-up-to maliput-dragway
+   colcon build --cmake-args -DWITH_PYTHON_VERSION=3 --packages-up-to maliput_dragway
    ```

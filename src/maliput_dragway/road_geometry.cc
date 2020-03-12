@@ -1,4 +1,4 @@
-#include "dragway/road_geometry.h"
+#include "maliput_dragway/road_geometry.h"
 
 #include <cmath>
 #include <memory>
@@ -9,8 +9,8 @@
 #include "maliput/common/maliput_unused.h"
 #include "maliput/geometry_base/brute_force_find_road_positions_strategy.h"
 
-#include "dragway/branch_point.h"
-#include "dragway/junction.h"
+#include "maliput_dragway/branch_point.h"
+#include "maliput_dragway/junction.h"
 
 using std::make_unique;
 

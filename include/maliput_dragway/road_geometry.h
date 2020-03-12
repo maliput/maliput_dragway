@@ -5,14 +5,14 @@
 #include <optional>
 #include <vector>
 
-#include "dragway/branch_point.h"
-#include "dragway/junction.h"
 #include "maliput/api/basic_id_index.h"
 #include "maliput/api/branch_point.h"
 #include "maliput/api/junction.h"
 #include "maliput/api/lane_data.h"
 #include "maliput/api/road_geometry.h"
 #include "maliput/common/maliput_copyable.h"
+#include "maliput_dragway/branch_point.h"
+#include "maliput_dragway/junction.h"
 
 namespace maliput {
 namespace dragway {

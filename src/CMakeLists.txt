@@ -1,3 +1,3 @@
 add_subdirectory(bindings)
-add_subdirectory(dragway)
-add_subdirectory(dragway_test_utilities)
+add_subdirectory(maliput_dragway)
+add_subdirectory(maliput_dragway_test_utilities)

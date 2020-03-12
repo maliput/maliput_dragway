@@ -9,20 +9,20 @@ set(SOURCES
   road_geometry.cc
   segment.cc)
 
-add_library(dragway ${SOURCES})
+add_library(maliput_dragway ${SOURCES})
 
-target_include_directories(dragway
+target_include_directories(maliput_dragway
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(dragway
+target_link_libraries(maliput_dragway
   maliput::api
   maliput::common
   maliput::geometry_base
 )
 
-ament_target_dependencies(dragway
+ament_target_dependencies(maliput_dragway
     "maliput"
 )
 
@@ -31,11 +31,11 @@ ament_target_dependencies(dragway
 ##############################################################################
 
 install(
-    TARGETS dragway
+    TARGETS maliput_dragway
     EXPORT ${PROJECT_NAME}-targets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-ament_export_libraries(dragway)
+ament_export_libraries(maliput_dragway)

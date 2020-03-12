@@ -8,15 +8,15 @@ node('delphyne-linux-bionic-unprovisioned') {
     ansiColor('xterm') {
       try {
         stage('checkout') {
-          dir('src/maliput-dragway') {
+          dir('src/maliput_dragway') {
             checkout scm
           }
         }
         stage('checkout_index') {
-          sh 'src/maliput-dragway/ci/jenkins/checkout_index'
+          sh 'src/maliput_dragway/ci/jenkins/checkout_index'
         }
-        withEnv(['COLCON_BUILD_EXTRA_ARGS=--packages-up-to maliput-dragway',
-                 'COLCON_TEST_EXTRA_ARGS=--packages-up-to maliput-dragway']) {
+        withEnv(['COLCON_BUILD_EXTRA_ARGS=--packages-up-to maliput_dragway',
+                 'COLCON_TEST_EXTRA_ARGS=--packages-up-to maliput_dragway']) {
           load './index/ci/jenkins/pipeline.groovy'
         }
       } finally {

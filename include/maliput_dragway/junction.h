@@ -10,7 +10,7 @@
 #include "maliput/common/maliput_abort.h"
 #include "maliput/common/maliput_copyable.h"
 
-#include "dragway/segment.h"
+#include "maliput_dragway/segment.h"
 
 namespace maliput {
 namespace dragway {

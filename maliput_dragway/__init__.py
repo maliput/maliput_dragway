@@ -1,1 +1,1 @@
-from maliput_dragway.dragway import *
+from maliput_dragway import *

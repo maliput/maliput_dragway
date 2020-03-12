@@ -16,7 +16,7 @@ macro(add_dependencies_to_test target)
       )
 
       target_link_libraries(${target}
-          dragway
+          maliput_dragway
           maliput::maliput_test_utilities)
 
     endif()

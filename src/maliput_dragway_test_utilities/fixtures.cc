@@ -1,8 +1,8 @@
-#include "dragway_test_utilities/fixtures.h"
+#include "maliput_dragway_test_utilities/fixtures.h"
 
 #include <limits>
 
-#include "dragway/road_geometry.h"
+#include "maliput_dragway/road_geometry.h"
 
 using maliput::api::GeoPosition;
 using maliput::api::RoadGeometryId;

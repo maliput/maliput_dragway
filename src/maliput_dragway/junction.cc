@@ -1,7 +1,7 @@
-#include "dragway/junction.h"
+#include "maliput_dragway/junction.h"
 
-#include "dragway/road_geometry.h"
-#include "dragway/segment.h"
+#include "maliput_dragway/road_geometry.h"
+#include "maliput_dragway/segment.h"
 
 namespace maliput {
 namespace dragway {
