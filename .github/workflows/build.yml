@@ -3,7 +3,6 @@ name: Compile and test
 on: [push, pull_request]
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   CLONE_NAME: maliput-dragway
   PACKAGE_NAME: maliput_dragway
   ROS_DISTRO: dashing
