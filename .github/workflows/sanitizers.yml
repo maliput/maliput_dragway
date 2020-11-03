@@ -1,4 +1,4 @@
-name: Compile and test with gcc and clang
+name: Compile and test with asan, tsan and ubsan
 
 on: [push, pull_request]
 
@@ -15,18 +15,19 @@ jobs:
       image: ubuntu:18.04
     strategy:
       matrix:
-        compiler: [gcc, clang]
+        sanitizer: [asan, ubsan, tsan]
         include:
-          - compiler: gcc
-            CC: gcc
-            CXX: g++
-            LINKER_PATH: /usr/bin/ld
-          - compiler: clang
-            CC: clang
-            CXX: clang++
-            LINKER_PATH: /usr/bin/llvm-ld
+          - sanitizer: asan
+            COMPILER_FLAG: ' -DADDRESS_SANITIZER=On'
+          - sanitizer: tsan
+            COMPILER_FLAG: ' -DTHREAD_SANITIZER=On'
+          - sanitizer: ubsan
+            COMPILER_FLAG: ' -DUNDEFINED_SANITIZER=On'
     env:
-      DO_BUILD: ${{ matrix.compiler == 'gcc' || github.event_name == 'pull_request' || ( github.event_name == 'push' && github.ref == 'master') }}
+      DO_BUILD: ${{ github.event_name == 'pull_request' || ( github.event_name == 'push' && github.ref == 'master') }}
+      CC: clang
+      CXX: clang++
+      LINKER_PATH: /usr/bin/llvm-ld
     steps:
     - run: echo ${DO_BUILD}
     - uses: actions/checkout@v2
@@ -40,10 +41,11 @@ jobs:
         repository: ToyotaResearchInstitute/maliput
         path: ${{ env.ROS_WS }}/src/maliput
         token: ${{ secrets.MALIPUT_TOKEN }}
+    # use setup-ros action to get vcs, rosdep, and colcon
     - uses: ros-tooling/setup-ros@0.0.25
       if: ${{ env.DO_BUILD == 'true' }}
     - name: clang 8 install
-      if: ${{ matrix.compiler == 'clang' && github.event_name == 'pull_request' }}
+      if: ${{ env.DO_BUILD == 'true' }}
       shell: bash
       run: ${{ env.ROS_WS }}/src/${{ env.PACKAGE_NAME }}/.github/clang_suite_installation.sh
     # clone public dependencies
@@ -63,32 +65,21 @@ jobs:
       run: |
         rosdep update;
         rosdep install  -i -y --rosdistro ${ROS_DISTRO} --skip-keys "pybind11" --from-paths src
-    - name: colcon build libraries
+    - name: colcon build
       if: ${{ env.DO_BUILD == 'true' }}
       shell: bash
       working-directory: ${{ env.ROS_WS }}
       env:
-        CC: ${{ matrix.CC }}
-        CXX: ${{ matrix.CXX }}
-        LINKER_PATH: ${{ matrix.LINKER_PATH }}
+        CC: ${{ env.CC }}
+        CXX: ${{ env.CXX }}
+        LINKER_PATH: ${{ env.LINKER_PATH }}
+        COMPILER_FLAG: ${{ matrix.COMPILER_FLAG }}
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
-        colcon build --packages-up-to ${PACKAGE_NAME} \
-          --event-handlers=console_direct+ \
-          --cmake-args -DBUILD_TESTING=OFF -DCMAKE_LINKER=${LINKER_PATH} ;
-    - name: colcon build tests
-      if: ${{ env.DO_BUILD == 'true' }}
-      shell: bash
-      working-directory: ${{ env.ROS_WS }}
-      env:
-        CC: ${{ matrix.CC }}
-        CXX: ${{ matrix.CXX }}
-        LINKER_PATH: ${{ matrix.LINKER_PATH }}
-      run: |
-        . /opt/ros/${ROS_DISTRO}/setup.bash;
-        colcon build --packages-select ${PACKAGE_NAME} \
-          --event-handlers=console_direct+ \
-          --cmake-args -DBUILD_TESTING=ON -DCMAKE_LINKER=${LINKER_PATH};
+        colcon build --cmake-args -DCMAKE_LINKER=${LINKER_PATH} \
+            ${COMPILER_FLAG} \
+            --packages-up-to ${PACKAGE_NAME} \
+            --event-handlers=console_direct+;
     - name: colcon test
       if: ${{ env.DO_BUILD == 'true' }}
       shell: bash
