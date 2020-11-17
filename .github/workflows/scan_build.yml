@@ -28,9 +28,7 @@ jobs:
         path: ${{ env.ROS_WS }}/src/maliput
         token: ${{ secrets.MALIPUT_TOKEN }}
     # use setup-ros action to get vcs, rosdep, and colcon
-    - uses: ros-tooling/setup-ros@0.0.25
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    - uses: ros-tooling/setup-ros@0.0.26
     - name: clang 8 install
       shell: bash
       run: ${{ env.ROS_WS }}/src/${{ env.PACKAGE_NAME }}/.github/clang_suite_installation.sh
