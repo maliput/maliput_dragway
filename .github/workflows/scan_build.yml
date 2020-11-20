@@ -42,9 +42,7 @@ jobs:
     - name: check if dependencies have a matching branch
       shell: bash
       working-directory: ${{ env.ROS_WS }}/src
-      env:
-        HEAD_REF: ${{ github.head_ref }}
-      run: ./${PACKAGE_NAME}/.github/try_vcs_checkout ${HEAD_REF:-${GITHUB_REF#refs/heads/}} .
+      run: ./${PACKAGE_NAME}/.github/try_vcs_checkout ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} .
     - name: clang 8 install
       shell: bash
       run: ${{ env.ROS_WS }}/src/${{ env.PACKAGE_NAME }}/.github/clang_suite_installation.sh

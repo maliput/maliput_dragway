@@ -38,9 +38,7 @@ jobs:
     - name: check if dependencies have a matching branch
       shell: bash
       working-directory: ${{ env.ROS_WS }}/src
-      env:
-        HEAD_REF: ${{ github.head_ref }}
-      run: ./${PACKAGE_NAME}/.github/try_vcs_checkout ${HEAD_REF:-${GITHUB_REF#refs/heads/}} .
+      run: ./${PACKAGE_NAME}/.github/try_vcs_checkout ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} .
     # clone public dependencies
     - name: vcs import
       shell: bash
