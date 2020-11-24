@@ -4,10 +4,7 @@
 
 pybind11_add_module(dragway_py dragway_py.cc)
 
-set_target_properties(dragway_py
-  PROPERTIES
-    OUTPUT_NAME maliput_dragway_py
-)
+set_target_properties(dragway_py PROPERTIES OUTPUT_NAME "dragway")
 
 target_include_directories(dragway_py
   PUBLIC
