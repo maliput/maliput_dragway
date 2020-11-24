@@ -11,6 +11,13 @@ set(SOURCES
 
 add_library(maliput_dragway ${SOURCES})
 
+add_library(maliput_dragway::maliput_dragway ALIAS maliput_dragway)
+
+set_target_properties(maliput_dragway
+  PROPERTIES
+    OUTPUT_NAME maliput_dragway
+)
+
 target_include_directories(maliput_dragway
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
