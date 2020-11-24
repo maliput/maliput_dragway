@@ -14,7 +14,6 @@ target_include_directories(
 
 ament_target_dependencies(maliput_dragway_test_utilities
   "maliput"
-  "maliput_dragway"
 )
 
 target_link_libraries(maliput_dragway_test_utilities
