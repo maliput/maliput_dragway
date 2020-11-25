@@ -23,10 +23,11 @@ target_link_libraries(maliput_dragway_test_utilities
 )
 
 install(
-    TARGETS maliput_dragway_test_utilities
-    EXPORT ${PROJECT_NAME}-targets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
+  TARGETS maliput_dragway_test_utilities
+  EXPORT ${PROJECT_NAME}-targets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 ament_export_libraries(maliput_dragway_test_utilities)
