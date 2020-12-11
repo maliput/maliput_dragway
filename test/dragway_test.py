@@ -3,7 +3,7 @@ from __future__ import print_function
 import copy
 import unittest
 
-from maliput.api import (
+from maliput_py.api import (
     LanePosition,
     LanePositionResult,
     GeoPosition,
@@ -13,7 +13,7 @@ from maliput.api import (
     Rotation
 )
 
-from maliput.math import (
+from maliput_py.math import (
     Quaternion,
     Vector3,
     Vector4
