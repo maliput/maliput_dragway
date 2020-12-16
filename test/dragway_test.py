@@ -4,9 +4,9 @@ import copy
 import unittest
 
 from maliput.api import (
+    InertialPosition,
     LanePosition,
     LanePositionResult,
-    GeoPosition,
     RoadGeometry,
     RoadGeometryId,
     RoadPosition,
@@ -57,12 +57,12 @@ class TestMaliput(unittest.TestCase):
         self.assertTrue(are_vector3_equal(lane_pos_alt.srh(), srh))
 
         xyz = [1., 2., 3.]
-        geo_pos = GeoPosition(xyz[0], xyz[1], xyz[2])
-        self.assertTrue(geo_pos.xyz().size() == 3)
-        self.assertTrue(are_vector3_equal(geo_pos.xyz(), xyz))
+        inertial_pos = InertialPosition(xyz[0], xyz[1], xyz[2])
+        self.assertTrue(inertial_pos.xyz().size() == 3)
+        self.assertTrue(are_vector3_equal(inertial_pos.xyz(), xyz))
 
-        geo_pos_alt = GeoPosition(x=1., y=2., z=3.)
-        self.assertTrue(are_vector3_equal(geo_pos_alt.xyz(), xyz))
+        inertial_pos_alt = InertialPosition(x=1., y=2., z=3.)
+        self.assertTrue(are_vector3_equal(inertial_pos_alt.xyz(), xyz))
 
         RoadPosition()
         rg = make_test_dragway(lane_width=4., length=100.)
@@ -91,7 +91,7 @@ class TestMaliput(unittest.TestCase):
         with self.assertRaises(TypeError):
             lane_pos.srh()[0] = 0.
         with self.assertRaises(TypeError):
-            geo_pos.xyz()[0] = 0.
+            inertial_pos.xyz()[0] = 0.
 
         # Test RoadGeometryId accessors.
         string = "foo"
@@ -132,17 +132,17 @@ class TestMaliput(unittest.TestCase):
 
         # Test the Lane <-> Geo space coordinate conversion.
         lane_pos = LanePosition(0., 0., 0.)
-        geo_pos_result = lane_0.ToGeoPosition(lane_pos)
-        geo_pos_expected = GeoPosition(0., -kLaneWidth / 2., 0.)
-        self.assertTrue(are_vector3_equal(geo_pos_result.xyz(),geo_pos_expected.xyz()))
+        inertial_pos_result = lane_0.ToInertialPosition(lane_pos)
+        inertial_pos_expected = InertialPosition(0., -kLaneWidth / 2., 0.)
+        self.assertTrue(are_vector3_equal(inertial_pos_result.xyz(),inertial_pos_expected.xyz()))
 
-        geo_pos = GeoPosition(1., kLaneWidth / 2., 3.)
-        lane_pos_result = lane_1.ToLanePosition(geo_pos)
+        inertial_pos = InertialPosition(1., kLaneWidth / 2., 3.)
+        lane_pos_result = lane_1.ToLanePosition(inertial_pos)
         lane_pos_result_expected = \
-            LanePositionResult(LanePosition(1., 0., 3.), GeoPosition(0., 0., 0.), 0.)
+            LanePositionResult(LanePosition(1., 0., 3.), InertialPosition(0., 0., 0.), 0.)
         self.assertTrue(are_vector3_equal(lane_pos_result.lane_position.srh(),
                                     lane_pos_result_expected.lane_position.srh()))
-        self.assertTrue(are_vector3_equal(lane_pos_result.nearest_position.xyz(), geo_pos.xyz()))
+        self.assertTrue(are_vector3_equal(lane_pos_result.nearest_position.xyz(), inertial_pos.xyz()))
         self.assertTrue(lane_pos_result.distance == lane_pos_result_expected.distance)
 
     # TODO(jadecastro) Add more maliput backends as needed.

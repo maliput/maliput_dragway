@@ -127,12 +127,12 @@ class MaliputDragwayLaneTest : public ::testing::Test {
              h += (expected.elevation_max - expected.elevation_min) * 0.1) {
           const api::LanePosition lane_position(s, r, h);
 
-          // Tests Lane::ToGeoPosition().
-          const api::GeoPosition geo_position = lane->ToGeoPosition(lane_position);
+          // Tests Lane::ToInertialPosition().
+          const api::InertialPosition inertial_position = lane->ToInertialPosition(lane_position);
           const double linear_tolerance = lane->segment()->junction()->road_geometry()->linear_tolerance();
-          EXPECT_DOUBLE_EQ(geo_position.x(), s);
-          EXPECT_NEAR(geo_position.y(), expected.y_offset + r, linear_tolerance);
-          EXPECT_DOUBLE_EQ(geo_position.z(), h);
+          EXPECT_DOUBLE_EQ(inertial_position.x(), s);
+          EXPECT_NEAR(inertial_position.y(), expected.y_offset + r, linear_tolerance);
+          EXPECT_DOUBLE_EQ(inertial_position.z(), h);
 
           // Tests Lane::GetOrientation().
           const api::Rotation rotation = lane->GetOrientation(lane_position);
@@ -211,7 +211,7 @@ class MaliputDragwayLaneTest : public ::testing::Test {
     }
   }
 
-  void PopulateGeoPositionTestCases() {
+  void PopulateInertialPositionTestCases() {
     /*
       A figure of the one-lane dragway is shown below. The minimum and maximum
       values of the dragway' segment surface are demarcated.
@@ -347,7 +347,7 @@ TEST_F(MaliputDragwayLaneTest, TwoLaneDragway) {
 // Tests dragway::RoadGeometry::ToRoadPosition() using a two-lane dragway where
 // the x,y projection of all geographic positions provided to it are in the
 // road' segment region. This unit test also verifies that
-// dragway::RoadGeometry::IsGeoPositionOnDragway() does not incorrectly return
+// dragway::RoadGeometry::IsInertialPositionOnDragway() does not incorrectly return
 // false.
 TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOnRoad) {
   MakeDragway(2 /* num lanes */);
@@ -357,10 +357,10 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOnRoad) {
   for (double x = 0; x <= length_; x += length_ / 2) {
     for (double y = -lane_width_ - shoulder_width_; y <= 0; y += (lane_width_ + shoulder_width_) / 2) {
       for (double z = 0; z <= maximum_height_; z += maximum_height_ / 2.) {
-        const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::GeoPosition(x, y, z));
+        const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::InertialPosition(x, y, z));
         const api::Lane* expected_lane = road_geometry_->junction(0)->segment(0)->lane(0);
-        EXPECT_TRUE(
-            api::test::IsGeoPositionClose(result.nearest_position, api::GeoPosition(x, y, z), kLinearTolerance));
+        EXPECT_TRUE(api::test::IsInertialPositionClose(result.nearest_position, api::InertialPosition(x, y, z),
+                                                       kLinearTolerance));
         EXPECT_DOUBLE_EQ(result.distance, 0);
         EXPECT_EQ(result.road_position.lane, expected_lane);
         EXPECT_TRUE(api::test::IsLanePositionClose(result.road_position.pos,
@@ -374,11 +374,11 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOnRoad) {
   for (double x = 0; x <= length_; x += length_ / 2) {
     for (double y = 0; y <= lane_width_ + shoulder_width_; y += (lane_width_ + shoulder_width_) / 2) {
       for (double z = 0; z <= maximum_height_; z += maximum_height_ / 2.) {
-        const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::GeoPosition(x, y, z));
+        const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::InertialPosition(x, y, z));
         const int lane_index = (y == 0 ? 0 : 1);
         const api::Lane* expected_lane = road_geometry_->junction(0)->segment(0)->lane(lane_index);
-        EXPECT_TRUE(
-            api::test::IsGeoPositionClose(result.nearest_position, api::GeoPosition(x, y, z), kLinearTolerance));
+        EXPECT_TRUE(api::test::IsInertialPositionClose(result.nearest_position, api::InertialPosition(x, y, z),
+                                                       kLinearTolerance));
         EXPECT_DOUBLE_EQ(result.distance, 0);
         EXPECT_EQ(result.road_position.lane, expected_lane);
         if (y == 0) {
@@ -396,7 +396,7 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOnRoad) {
 // Tests dragway::RoadGeometry::ToRoadPosition() using a two-lane dragway where
 // the x,y projection of all geographic positions provided to it may be outside
 // of the road' segment region. This unit test also verifies that
-// dragway::RoadGeometry::IsGeoPositionOnDragway() does not incorrectly return
+// dragway::RoadGeometry::IsInertialPositionOnDragway() does not incorrectly return
 // false.
 TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOffRoad) {
   MakeDragway(2 /* num lanes */);
@@ -429,7 +429,7 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOffRoad) {
   for (const auto x : x_test_cases) {
     for (const auto y : y_test_cases) {
       for (const auto z : z_test_cases) {
-        const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::GeoPosition(x, y, z));
+        const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::InertialPosition(x, y, z));
         EXPECT_LE(result.nearest_position.x(), x_max);
         EXPECT_GE(result.nearest_position.x(), x_min);
         EXPECT_LE(result.nearest_position.y(), y_max);
@@ -437,7 +437,7 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOffRoad) {
         EXPECT_LE(result.nearest_position.z(), z_max);
         EXPECT_GE(result.nearest_position.z(), z_min);
 
-        api::GeoPosition expected_nearest_position;
+        api::InertialPosition expected_nearest_position;
         expected_nearest_position.set_x(x);
         expected_nearest_position.set_y(y);
         expected_nearest_position.set_z(z);
@@ -461,7 +461,7 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOffRoad) {
         }
 
         EXPECT_TRUE(
-            api::test::IsGeoPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance));
+            api::test::IsInertialPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance));
         // TODO(maddog@tri.global)  Should test for explicit correct distance.
         EXPECT_LT(0, result.distance);
         const int expected_lane_index = (y > 0 ? 1 : 0);
@@ -482,13 +482,13 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOffRoad) {
 // projections onto the XY plane reside within the lane's region.
 TEST_F(MaliputDragwayLaneTest, TestToLanePosition) {
   MakeDragway(1 /* num lanes */);
-  PopulateGeoPositionTestCases();
+  PopulateInertialPositionTestCases();
 
   for (const double x : x_test_cases_) {
     for (const double y : y_test_cases_) {
       for (const double z : z_test_cases_) {
-        const api::LanePositionResult result = lane_->ToLanePosition(api::GeoPosition(x, y, z));
-        api::GeoPosition expected_nearest_position(x, y, z);
+        const api::LanePositionResult result = lane_->ToLanePosition(api::InertialPosition(x, y, z));
+        api::InertialPosition expected_nearest_position(x, y, z);
         if (x < min_x_) {
           expected_nearest_position.set_x(min_x_);
         }
@@ -509,7 +509,7 @@ TEST_F(MaliputDragwayLaneTest, TestToLanePosition) {
         }
 
         EXPECT_TRUE(
-            api::test::IsGeoPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance));
+            api::test::IsInertialPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance));
         // TODO(maddog@tri.global)  Should test for explicit correct distance.
         EXPECT_GE(result.distance, 0);
         EXPECT_TRUE(api::test::IsLanePositionClose(
@@ -525,7 +525,7 @@ TEST_F(MaliputDragwayLaneTest, TestToLanePosition) {
 // Holds RoadPositionResult expected arguments.
 struct RoadPositionResultExpectation {
   api::LanePosition lane_position;
-  api::GeoPosition nearest_position;
+  api::InertialPosition nearest_position;
   double distance{};
 };
 
@@ -533,7 +533,7 @@ struct RoadPositionResultExpectation {
 struct FindRoadPositionsTestParameters {
   int dragway_num_lanes{};
   double radius{};
-  api::GeoPosition inertial_position;
+  api::InertialPosition inertial_position;
   std::map<api::LaneId, RoadPositionResultExpectation> expected_results;
 };
 
@@ -579,7 +579,7 @@ class MaliputDragwayFindRoadPositionTest : public ::testing::TestWithParam<FindR
 
   int dragway_num_lanes_{};
   double radius_{};
-  api::GeoPosition inertial_position_;
+  api::InertialPosition inertial_position_;
   std::map<api::LaneId, RoadPositionResultExpectation> expected_results_;
   std::unique_ptr<RoadGeometry> road_geometry_;
 };
@@ -594,29 +594,29 @@ std::vector<FindRoadPositionsTestParameters> MaliputDragwayFindRoadPositionTest:
       // { Single-lane Dragway tests cases.
       // Point is outside the RoadGeometry volume with zero radius, no possible
       // match.
-      {1, 0., api::GeoPosition(10., 20., 30.), {}},
+      {1, 0., api::InertialPosition(10., 20., 30.), {}},
       // Point is outside the RoadGeometry volume with small radius, no possible
       // match.
-      {1, 10., api::GeoPosition(10., 20., 30.), {}},
+      {1, 10., api::InertialPosition(10., 20., 30.), {}},
       // Point is outside the RoadGeometry volume with big enough radius to produce
       // a match.
       {
           1,
           30.,
-          api::GeoPosition(10., 20., 30.),
+          api::InertialPosition(10., 20., 30.),
           {
               {api::LaneId("Dragway_Lane_0"),
-               {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 3.5, 5.), 29.95413160150032}},
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 3.5, 5.), 29.95413160150032}},
           },
       },
       // Same result as before but with a relatively big radius.
       {
           1,
           1000.,
-          api::GeoPosition(10., 20., 30.),
+          api::InertialPosition(10., 20., 30.),
           {
               {api::LaneId("Dragway_Lane_0"),
-               {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 3.5, 5.), 29.95413160150032}},
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 3.5, 5.), 29.95413160150032}},
           },
       },
       // Biggest radius possible, the closest point to Inertial position is
@@ -624,10 +624,10 @@ std::vector<FindRoadPositionsTestParameters> MaliputDragwayFindRoadPositionTest:
       {
           1,
           std::numeric_limits<double>::infinity(),
-          api::GeoPosition(10., 20., 30.),
+          api::InertialPosition(10., 20., 30.),
           {
               {api::LaneId("Dragway_Lane_0"),
-               {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 3.5, 5.), 29.95413160150032}},
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 3.5, 5.), 29.95413160150032}},
           },
       },
       // } Single-lane Dragway tests cases.
@@ -635,34 +635,37 @@ std::vector<FindRoadPositionsTestParameters> MaliputDragwayFindRoadPositionTest:
       // { Multiple-lane Dragway test cases.
       // Point is outside the RoadGeometry volume with zero radius, no possible
       // match.
-      {3, 0., api::GeoPosition(10., 20., 30.), {}},
+      {3, 0., api::InertialPosition(10., 20., 30.), {}},
       // Point is outside the RoadGeometry volume with small radius, no possible
       // match.
-      {3, 10., api::GeoPosition(10., 20., 30.), {}},
+      {3, 10., api::InertialPosition(10., 20., 30.), {}},
       // Point is outside the RoadGeometry volume with big enough radius to
       // produce a match.
       {
           3,
           28.,
-          api::GeoPosition(10., 20., 30.),
+          api::InertialPosition(10., 20., 30.),
           {
               {api::LaneId("Dragway_Lane_0"),
-               {api::LanePosition(10., 15.5, 5.), api::GeoPosition(10., 9.5, 5.), 27.115493725912497}},
+               {api::LanePosition(10., 15.5, 5.), api::InertialPosition(10., 9.5, 5.), 27.115493725912497}},
               {api::LaneId("Dragway_Lane_1"),
-               {api::LanePosition(10., 9.5, 5.), api::GeoPosition(10., 9.5, 5.), 27.115493725912497}},
+               {api::LanePosition(10., 9.5, 5.), api::InertialPosition(10., 9.5, 5.), 27.115493725912497}},
               {api::LaneId("Dragway_Lane_2"),
-               {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 9.5, 5.), 27.115493725912497}},
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 9.5, 5.), 27.115493725912497}},
           },
       },
       // Point is within the RoadGeometry volume, specifically at the interface.
       {
           3,
           0.,
-          api::GeoPosition(10., 9.5, 5.),
+          api::InertialPosition(10., 9.5, 5.),
           {
-              {api::LaneId("Dragway_Lane_0"), {api::LanePosition(10., 15.5, 5.), api::GeoPosition(10., 9.5, 5.), 0.}},
-              {api::LaneId("Dragway_Lane_1"), {api::LanePosition(10., 9.5, 5.), api::GeoPosition(10., 9.5, 5.), 0.}},
-              {api::LaneId("Dragway_Lane_2"), {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 9.5, 5.), 0.}},
+              {api::LaneId("Dragway_Lane_0"),
+               {api::LanePosition(10., 15.5, 5.), api::InertialPosition(10., 9.5, 5.), 0.}},
+              {api::LaneId("Dragway_Lane_1"),
+               {api::LanePosition(10., 9.5, 5.), api::InertialPosition(10., 9.5, 5.), 0.}},
+              {api::LaneId("Dragway_Lane_2"),
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 9.5, 5.), 0.}},
           },
       },
       // Point is outside the RoadGeometry volume with infinite radius, all lanes
@@ -670,14 +673,14 @@ std::vector<FindRoadPositionsTestParameters> MaliputDragwayFindRoadPositionTest:
       {
           3,
           std::numeric_limits<double>::infinity(),
-          api::GeoPosition(10., 20., 30.),
+          api::InertialPosition(10., 20., 30.),
           {
               {api::LaneId("Dragway_Lane_0"),
-               {api::LanePosition(10., 15.5, 5.), api::GeoPosition(10., 9.5, 5.), 27.115493725912497}},
+               {api::LanePosition(10., 15.5, 5.), api::InertialPosition(10., 9.5, 5.), 27.115493725912497}},
               {api::LaneId("Dragway_Lane_1"),
-               {api::LanePosition(10., 9.5, 5.), api::GeoPosition(10., 9.5, 5.), 27.115493725912497}},
+               {api::LanePosition(10., 9.5, 5.), api::InertialPosition(10., 9.5, 5.), 27.115493725912497}},
               {api::LaneId("Dragway_Lane_2"),
-               {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 9.5, 5.), 27.115493725912497}},
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 9.5, 5.), 27.115493725912497}},
           },
       },
       // Point is within the RoadGeometry volume, with infinite radius, all lanes
@@ -685,11 +688,14 @@ std::vector<FindRoadPositionsTestParameters> MaliputDragwayFindRoadPositionTest:
       {
           3,
           std::numeric_limits<double>::infinity(),
-          api::GeoPosition(10., 9.5, 5.),
+          api::InertialPosition(10., 9.5, 5.),
           {
-              {api::LaneId("Dragway_Lane_0"), {api::LanePosition(10., 15.5, 5.), api::GeoPosition(10., 9.5, 5.), 0.}},
-              {api::LaneId("Dragway_Lane_1"), {api::LanePosition(10., 9.5, 5.), api::GeoPosition(10., 9.5, 5.), 0.}},
-              {api::LaneId("Dragway_Lane_2"), {api::LanePosition(10., 3.5, 5.), api::GeoPosition(10., 9.5, 5.), 0.}},
+              {api::LaneId("Dragway_Lane_0"),
+               {api::LanePosition(10., 15.5, 5.), api::InertialPosition(10., 9.5, 5.), 0.}},
+              {api::LaneId("Dragway_Lane_1"),
+               {api::LanePosition(10., 9.5, 5.), api::InertialPosition(10., 9.5, 5.), 0.}},
+              {api::LaneId("Dragway_Lane_2"),
+               {api::LanePosition(10., 3.5, 5.), api::InertialPosition(10., 9.5, 5.), 0.}},
           },
       },
       // } Multiple-lane Dragway test cases.
@@ -710,7 +716,7 @@ TEST_P(MaliputDragwayFindRoadPositionTest, FindRoadPositionsWithOneLane) {
     EXPECT_TRUE(expected_results_.find(dut.road_position.lane->id()) != expected_results_.end());
     EXPECT_TRUE(api::test::IsLanePositionClose(
         dut.road_position.pos, expected_results_[dut.road_position.lane->id()].lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsGeoPositionClose(
+    EXPECT_TRUE(api::test::IsInertialPositionClose(
         dut.nearest_position, expected_results_[dut.road_position.lane->id()].nearest_position, kLinearTolerance));
     EXPECT_NEAR(dut.distance, expected_results_[dut.road_position.lane->id()].distance, kLinearTolerance);
   }
