@@ -5,6 +5,7 @@
 
 
 namespace maliput {
+namespace dragway {
 namespace plugin {
 
 class DragwayRoadNetwork : public RoadNetworkPlugin {
@@ -18,4 +19,5 @@ class DragwayRoadNetwork : public RoadNetworkPlugin {
 extern "C" std::unique_ptr<RoadNetworkPlugin> LoadMaliputRoadNetwork() { return std::make_unique<DragwayRoadNetwork>(); }
 
 }  // namespace plugin
+}  // namespace dragway
 }  // namespace maliput
