@@ -7,6 +7,7 @@ set(SOURCES
   junction.cc
   lane.cc
   road_geometry.cc
+  road_network_builder.cc
   segment.cc)
 
 add_library(maliput_dragway ${SOURCES})
@@ -25,6 +26,7 @@ target_include_directories(maliput_dragway
 
 target_link_libraries(maliput_dragway
   maliput::api
+  maliput::base
   maliput::common
   maliput::geometry_base
 )
