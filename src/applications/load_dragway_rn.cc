@@ -5,10 +5,10 @@
 #include <gflags/gflags.h>
 
 #include "maliput/common/logger.h"
-#include "maliput/api/load_road_network.h"
+#include "maliput/plugin/load_road_network.h"
 #include "maliput/utilities/generate_string.h"
 
-DEFINE_string(lib_name, "libmaliput_dragway_road_network", "Name of the .so file to be loaded.");
+DEFINE_string(lib_name, "libmaliput_dragway_road_network.so", "Name of the .so file to be loaded.");
 
 // Gflags to select options for serialization.
 DEFINE_bool(include_type_labels, false, "Whether to include type labels in the output string");
@@ -21,7 +21,7 @@ DEFINE_bool(include_lane_details, false, "Whether to include lane details in the
 int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  maliput::api::LoadRoadNetworkPlugin loader(FLAGS_lib_name);
+  maliput::plugin::LoadRoadNetworkPlugin loader(FLAGS_lib_name);
 
   // create an instance of the class
   std::unique_ptr<const maliput::api::RoadNetwork> rn = loader.GetRoadNetwork();
@@ -35,5 +35,4 @@ int main(int argc, char* argv[]) {
 
   std::cout << result << std::endl;
   return 0;
-
 }

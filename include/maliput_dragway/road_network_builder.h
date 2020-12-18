@@ -27,5 +27,5 @@ struct BuildProperties {
 /// @return A maliput::api::RoadNetwork.
 std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const BuildProperties& build_properties = BuildProperties());
 
-} // namespace dragway
-} // namespace maliput
+}  // namespace dragway
+}  // namespace maliput

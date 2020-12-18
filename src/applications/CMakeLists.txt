@@ -8,6 +8,7 @@ ament_target_dependencies(load_dragway_rn
 target_link_libraries(load_dragway_rn
   gflags
   maliput::api
+  maliput::plugin
   maliput::common
   maliput::utilities
 )
