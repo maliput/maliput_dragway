@@ -1,3 +1,4 @@
+// Copyright 2020 Toyota Research Institute
 #include "maliput_dragway/road_network_builder.h"
 
 #include <map>
@@ -22,12 +23,13 @@
 namespace maliput {
 namespace dragway {
 
-std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const BuildProperties& build_properties) {
+std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration) {
   maliput::log()->debug("Building dragway RoadNetwork.");
   auto rg = std::make_unique<dragway::RoadGeometry>(
-      api::RoadGeometryId{"Dragway with " + std::to_string(build_properties.num_lanes) + " lanes."},
-      build_properties.num_lanes, build_properties.length, build_properties.lane_width, build_properties.shoulder_width,
-      build_properties.maximum_height, std::numeric_limits<double>::epsilon(), std::numeric_limits<double>::epsilon());
+      api::RoadGeometryId{"Dragway with " + std::to_string(road_geometry_configuration.num_lanes) + " lanes."},
+      road_geometry_configuration.num_lanes, road_geometry_configuration.length, road_geometry_configuration.lane_width,
+      road_geometry_configuration.shoulder_width, road_geometry_configuration.maximum_height,
+      std::numeric_limits<double>::epsilon(), std::numeric_limits<double>::epsilon());
 
   std::unique_ptr<ManualRulebook> rulebook = std::make_unique<ManualRulebook>();
   std::unique_ptr<TrafficLightBook> traffic_light_book = std::make_unique<TrafficLightBook>();

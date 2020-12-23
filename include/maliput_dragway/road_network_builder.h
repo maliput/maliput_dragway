@@ -1,3 +1,4 @@
+// Copyright 2020 Toyota Research Institute
 #pragma once
 
 #include "maliput/api/road_geometry.h"
@@ -9,7 +10,7 @@ namespace maliput {
 namespace dragway {
 
 /// Contains the attributes needed for building a dragway::RoadGeometry.
-struct BuildProperties {
+struct RoadGeometryConfiguration {
   /// Number of lanes.
   int num_lanes{2};
   /// Length of the lanes.
@@ -23,9 +24,9 @@ struct BuildProperties {
 };
 
 /// Builds an api::RoadNetwork based on Dragway implementation.
-/// @param build_properties Holds the properties to build the RoadNetwork.
+/// @param road_geometry_configuration Holds the properties to build the RoadNetwork.
 /// @return A maliput::api::RoadNetwork.
-std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const BuildProperties& build_properties = BuildProperties());
+std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration);
 
 }  // namespace dragway
 }  // namespace maliput
