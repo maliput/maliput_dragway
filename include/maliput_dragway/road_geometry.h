@@ -66,12 +66,12 @@ class RoadGeometry final : public api::RoadGeometry {
 
   const IdIndex& DoById() const override { return id_index_; }
 
-  api::RoadPositionResult DoToRoadPosition(const api::GeoPosition& geo_position,
+  api::RoadPositionResult DoToRoadPosition(const api::InertialPosition& inertial_position,
                                            const std::optional<api::RoadPosition>& hint) const final;
 
   // Forwards the call to
   // maliput::geometry_base::BruteForceFindRoadPositionsStrategy().
-  std::vector<api::RoadPositionResult> DoFindRoadPositions(const api::GeoPosition& geo_position,
+  std::vector<api::RoadPositionResult> DoFindRoadPositions(const api::InertialPosition& inertial_position,
                                                            double radius) const final;
 
   double do_linear_tolerance() const final { return linear_tolerance_; }
@@ -80,14 +80,14 @@ class RoadGeometry final : public api::RoadGeometry {
 
   double do_scale_length() const final { return scale_length_; }
 
-  // Returns true iff `geo_pos` is "on" the dragway. It is on the dragway iff
-  // `geo_pos.x` and `geo_pos.y` fall within the dragway's segment surface.
-  bool IsGeoPositionOnDragway(const api::GeoPosition& geo_pos) const;
+  // Returns true iff `inertial_pos` is "on" the dragway. It is on the dragway iff
+  // `inertial_pos.x` and `inertial_pos.y` fall within the dragway's segment surface.
+  bool IsInertialPositionOnDragway(const api::InertialPosition& inertial_pos) const;
 
-  // Returns the index of the lane on which the provided `geo_pos` resides. This
-  // method requires that the provided `geo_pos` be on the dragway as determined
-  // by IsGeoPositionOnDragway().
-  int GetLaneIndex(const api::GeoPosition& geo_pos) const;
+  // Returns the index of the lane on which the provided `inertial_pos` resides. This
+  // method requires that the provided `inertial_pos` be on the dragway as determined
+  // by IsInertialPositionOnDragway().
+  int GetLaneIndex(const api::InertialPosition& inertial_pos) const;
 
   const api::RoadGeometryId id_;
   const double linear_tolerance_{};

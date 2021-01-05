@@ -146,11 +146,11 @@ class Lane final : public api::Lane {
   api::LanePosition DoEvalMotionDerivatives(const api::LanePosition& position,
                                             const api::IsoLaneVelocity& velocity) const final;
 
-  api::GeoPosition DoToGeoPosition(const api::LanePosition& lane_pos) const final;
+  api::InertialPosition DoToInertialPosition(const api::LanePosition& lane_pos) const final;
 
   api::Rotation DoGetOrientation(const api::LanePosition& lane_pos) const final;
 
-  api::LanePositionResult DoToLanePosition(const api::GeoPosition& geo_pos) const final;
+  api::LanePositionResult DoToLanePosition(const api::InertialPosition& inertial_pos) const final;
 
   const Segment* segment_{};  // The segment to which this lane belongs.
   const api::LaneId id_;

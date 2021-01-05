@@ -68,7 +68,7 @@ api::LanePosition Lane::DoEvalMotionDerivatives(const api::LanePosition&, const 
   return api::LanePosition(velocity.sigma_v, velocity.rho_v, velocity.eta_v);
 }
 
-api::GeoPosition Lane::DoToGeoPosition(const api::LanePosition& lane_pos) const {
+api::InertialPosition Lane::DoToInertialPosition(const api::LanePosition& lane_pos) const {
   return {lane_pos.s(), lane_pos.r() + Lane::y_offset(), lane_pos.h()};
 }
 
@@ -76,7 +76,7 @@ api::Rotation Lane::DoGetOrientation(const api::LanePosition&) const {
   return api::Rotation();  // Default is Identity.
 }
 
-api::LanePositionResult Lane::DoToLanePosition(const api::GeoPosition& geo_pos) const {
+api::LanePositionResult Lane::DoToLanePosition(const api::InertialPosition& inertial_pos) const {
   const double min_x{0.};
   const double max_x{length_};
   const double min_y{segment_bounds_.min() + y_offset_};
@@ -84,15 +84,15 @@ api::LanePositionResult Lane::DoToLanePosition(const api::GeoPosition& geo_pos) 
   const double min_z{elevation_bounds_.min()};
   const double max_z{elevation_bounds_.max()};
 
-  const double x = geo_pos.x();
-  const double y = geo_pos.y();
-  const double z = geo_pos.z();
+  const double x = inertial_pos.x();
+  const double y = inertial_pos.y();
+  const double z = inertial_pos.z();
 
   api::LanePositionResult result;
   result.nearest_position = {math::saturate(x, min_x, max_x), math::saturate(y, min_y, max_y),
                              math::saturate(z, min_z, max_z)};
 
-  const double distance_unsat = (geo_pos - result.nearest_position).xyz().norm();
+  const double distance_unsat = (inertial_pos - result.nearest_position).xyz().norm();
   result.distance = std::max(0., distance_unsat);
 
   result.lane_position = {result.nearest_position.x(), result.nearest_position.y() - y_offset_,
