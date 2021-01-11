@@ -16,8 +16,9 @@ ament_target_dependencies(maliput_dragway
 
 target_link_libraries(road_network
   maliput::api
-  maliput::common
   maliput::base
+  maliput::common
+  maliput::plugin
   maliput_dragway::maliput_dragway
 )
 
@@ -33,5 +34,5 @@ target_include_directories(road_network
 install(
   TARGETS road_network
   EXPORT ${PROJECT_NAME}-targets
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/../plugins"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/../maliput/lib/maliput/plugins"
 )
