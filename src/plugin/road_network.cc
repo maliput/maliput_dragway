@@ -11,7 +11,8 @@ namespace {
 
 // Return a dragway::RoadGeometryConfiguration object out of a map of strings.
 // When a property is missing it uses the default value from dragway::RoadGeometryConfiguration.
-// @param parameters A map of string.
+// @param parameters  A dictionary of properties to fill in a dragway::RoadGeometryConfiguration struct.
+//                    Keys are the names of attributes in dragway::RoadGeometryConfiguration.
 // @returns A dragway::RoadGeometryConfiguration.
 maliput::dragway::RoadGeometryConfiguration GetPropertiesFromStringMap(
     const std::map<std::string, std::string>& parameters) {
