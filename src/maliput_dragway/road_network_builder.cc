@@ -1,4 +1,4 @@
-// Copyright 2020 Toyota Research Institute
+// Copyright 2021 Toyota Research Institute
 #include "maliput_dragway/road_network_builder.h"
 
 #include <map>

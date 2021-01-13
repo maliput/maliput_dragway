@@ -1,4 +1,4 @@
-// Copyright 2020 Toyota Research Institute
+// Copyright 2021 Toyota Research Institute
 #include <memory>
 
 #include "maliput/plugin/road_network_loader.h"
@@ -9,6 +9,10 @@ namespace dragway {
 namespace plugin {
 namespace {
 
+// Return a dragway::RoadGeometryConfiguration object out of a map of strings.
+// When a property is missing it uses the default value from dragway::RoadGeometryConfiguration.
+// @param parameters A map of string.
+// @returns A dragway::RoadGeometryConfiguration.
 maliput::dragway::RoadGeometryConfiguration GetPropertiesFromStringMap(
     const std::map<std::string, std::string>& parameters) {
   RoadGeometryConfiguration rg_configuration{};
@@ -35,7 +39,8 @@ maliput::dragway::RoadGeometryConfiguration GetPropertiesFromStringMap(
   return rg_configuration;
 }
 
-class RoadNetwork : public maliput::plugin::RoadNetworkLoader {
+// Implementation of a maliput::plugin::RoadNetworkLoader using dragway backend.
+class RoadNetworkLoader : public maliput::plugin::RoadNetworkLoader {
  public:
   std::unique_ptr<const maliput::api::RoadNetwork> operator()(
       const std::map<std::string, std::string>& properties) const override {
@@ -45,7 +50,7 @@ class RoadNetwork : public maliput::plugin::RoadNetworkLoader {
 
 }  // namespace
 
-REGISTER_ROAD_NETWORK_LOADER_PLUGIN("maliput_dragway", RoadNetwork);
+REGISTER_ROAD_NETWORK_LOADER_PLUGIN("maliput_dragway", RoadNetworkLoader);
 
 }  // namespace plugin
 }  // namespace dragway
