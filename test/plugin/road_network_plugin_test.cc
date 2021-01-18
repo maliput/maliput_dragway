@@ -1,8 +1,9 @@
-#include <gtest/gtest.h>
-
+// Copyright 2021 Toyota Research Institute
 #include <map>
 #include <memory>
 #include <string>
+
+#include <gtest/gtest.h>
 
 #include "maliput/plugin/maliput_plugin.h"
 #include "maliput/plugin/maliput_plugin_manager.h"
@@ -22,23 +23,19 @@ GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
 
   // Check MaliputPlugin existence.
   plugin::MaliputPluginManager manager{};
-  plugin::MaliputPlugin const* rn_plugin{nullptr};
-  EXPECT_NO_THROW(rn_plugin = manager.GetPlugin(kDragwayPluginId));
+  const plugin::MaliputPlugin* rn_plugin{manager.GetPlugin(kDragwayPluginId)};
   ASSERT_NE(nullptr, rn_plugin);
 
   // Check dragway plugin is obtained.
-  std::unique_ptr<maliput::plugin::RoadNetworkLoader> rn_loader{nullptr};
-  if (rn_plugin != nullptr) {
-    // Without checking rn_plugin nullptrness the scan-build failed in this line.
-    EXPECT_EQ(kDragwayPluginId.string(), rn_plugin->GetId());
-    EXPECT_EQ(plugin::MaliputPluginType::kRoadNetworkLoader, rn_plugin->GetType());
-    EXPECT_NO_THROW(rn_loader = rn_plugin->ExecuteSymbol<std::unique_ptr<plugin::RoadNetworkLoader>>(
-                        plugin::RoadNetworkLoader::GetEntryPoint()));
-  }
+  std::unique_ptr<maliput::plugin::RoadNetworkLoader> rn_loader;
+  EXPECT_EQ(kDragwayPluginId.string(), rn_plugin->GetId());
+  EXPECT_EQ(plugin::MaliputPluginType::kRoadNetworkLoader, rn_plugin->GetType());
+  EXPECT_NO_THROW(rn_loader = rn_plugin->ExecuteSymbol<std::unique_ptr<plugin::RoadNetworkLoader>>(
+                      plugin::RoadNetworkLoader::GetEntryPoint()));
   ASSERT_NE(nullptr, rn_loader);
 
   // Check dragway RoadNetwork is constructible.
-  std::unique_ptr<const maliput::api::RoadNetwork> rn{nullptr};
+  std::unique_ptr<const maliput::api::RoadNetwork> rn;
   EXPECT_NO_THROW(rn = (*rn_loader)(rg_dragway_properties));
   ASSERT_NE(nullptr, rn);
   auto dragway_rg = dynamic_cast<const RoadGeometry*>(rn->road_geometry());
