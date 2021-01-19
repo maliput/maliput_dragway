@@ -34,3 +34,4 @@ if (NOT ${SANITIZERS})
   )
 endif()
 
+add_subdirectory(plugin)
