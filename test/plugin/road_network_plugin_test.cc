@@ -27,13 +27,16 @@ GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
   ASSERT_NE(nullptr, rn_plugin);
 
   // Check dragway plugin is obtained.
-  std::unique_ptr<maliput::plugin::RoadNetworkLoader> rn_loader;
   EXPECT_EQ(kDragwayPluginId.string(), rn_plugin->GetId());
-  EXPECT_EQ(plugin::MaliputPluginType::kRoadNetworkLoader, rn_plugin->GetType());
-  EXPECT_NO_THROW(rn_loader = rn_plugin->ExecuteSymbol<std::unique_ptr<plugin::RoadNetworkLoader>>(
-                      plugin::RoadNetworkLoader::GetEntryPoint()));
-  ASSERT_NE(nullptr, rn_loader);
+  EXPECT_EQ(MaliputPluginType::kRoadNetworkLoader, rn_plugin->GetType());
 
+  plugin::RoadNetworkLoaderPtr rn_loader_ptr{nullptr};
+  EXPECT_NO_THROW(rn_loader_ptr = rn_plugin->ExecuteSymbol<plugin::RoadNetworkLoaderPtr>(
+                      plugin::RoadNetworkLoader::GetEntryPoint()));
+  ASSERT_NE(nullptr, rn_loader_ptr);
+
+  std::unique_ptr<maliput::plugin::RoadNetworkLoader> rn_loader{
+      reinterpret_cast<plugin::RoadNetworkLoader*>(rn_loader_ptr)};
   // Check dragway RoadNetwork is constructible.
   std::unique_ptr<const maliput::api::RoadNetwork> rn;
   EXPECT_NO_THROW(rn = (*rn_loader)(rg_dragway_properties));
