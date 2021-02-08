@@ -28,7 +28,7 @@ GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
 
   // Check dragway plugin is obtained.
   EXPECT_EQ(kDragwayPluginId.string(), rn_plugin->GetId());
-  EXPECT_EQ(MaliputPluginType::kRoadNetworkLoader, rn_plugin->GetType());
+  EXPECT_EQ(plugin::MaliputPluginType::kRoadNetworkLoader, rn_plugin->GetType());
 
   plugin::RoadNetworkLoaderPtr rn_loader_ptr{nullptr};
   EXPECT_NO_THROW(rn_loader_ptr = rn_plugin->ExecuteSymbol<plugin::RoadNetworkLoaderPtr>(
