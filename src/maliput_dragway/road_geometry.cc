@@ -64,10 +64,12 @@ bool RoadGeometry::IsInertialPositionOnDragway(const api::InertialPosition& iner
   MALIPUT_DEMAND(lane != nullptr);
   const double length = lane->length();
   const api::RBounds lane_segment_bounds = lane->segment_bounds(0 /* s */);
-  const double min_y = lane->y_offset() + lane_segment_bounds.min();
-  const double max_y = lane->y_offset() + lane_segment_bounds.max();
+  const double min_y = lane->y_offset() + lane_segment_bounds.min() + inertial_to_backend_frame_translation_.y();
+  const double max_y = lane->y_offset() + lane_segment_bounds.max() + inertial_to_backend_frame_translation_.y();
 
-  if (inertial_pos.x() < 0 || inertial_pos.x() > length || inertial_pos.y() > max_y || inertial_pos.y() < min_y) {
+  if (inertial_pos.x() < inertial_to_backend_frame_translation_.x() ||
+      inertial_pos.x() > length + +inertial_to_backend_frame_translation_.x() || inertial_pos.y() > max_y ||
+      inertial_pos.y() < min_y) {
     maliput::log()->trace(
         "dragway::RoadGeometry::IsInertialPositionOnDragway(): The provided inertial_pos "
         "({}, {}) is not on the dragway (length = {}, min_y = {}, max_y = {}).",
@@ -79,13 +81,20 @@ bool RoadGeometry::IsInertialPositionOnDragway(const api::InertialPosition& iner
 }
 
 int RoadGeometry::GetLaneIndex(const api::InertialPosition& inertial_pos) const {
-  MALIPUT_DEMAND(IsInertialPositionOnDragway(inertial_pos));
+  MALIPUT_THROW_UNLESS(IsInertialPositionOnDragway(inertial_pos));
   bool lane_found{false};
   int result{0};
   for (int i = 0; !lane_found && i < junction_.segment(0)->num_lanes(); ++i) {
     const Lane* lane = dynamic_cast<const Lane*>(junction_.segment(0)->lane(i));
-    MALIPUT_DEMAND(lane != nullptr);
-    if (inertial_pos.y() <= lane->y_offset() + lane->lane_bounds(0).max()) {
+    MALIPUT_THROW_UNLESS(lane != nullptr);
+    const double max_segment_y =
+        lane->y_offset() + lane->segment_bounds(0).max() + inertial_to_backend_frame_translation_.y();
+    const double min_lane_y =
+        lane->y_offset() + lane->lane_bounds(0).min() + inertial_to_backend_frame_translation_.y();
+    const double max_lane_y =
+        lane->y_offset() + lane->lane_bounds(0).max() + inertial_to_backend_frame_translation_.y();
+
+    if (inertial_pos.y() <= max_lane_y) {
       result = i;
       lane_found = true;
     }
@@ -93,8 +102,7 @@ int RoadGeometry::GetLaneIndex(const api::InertialPosition& inertial_pos) const 
     // Checks whether `inertial_pos` is on the right shoulder. If it is, save the
     // index of the right-most lane in `result`.
     if (lane->to_right() == nullptr) {
-      if (inertial_pos.y() <= lane->y_offset() + lane->lane_bounds(0).min() &&
-          inertial_pos.y() >= lane->y_offset() + lane->segment_bounds(0).min()) {
+      if (inertial_pos.y() <= min_lane_y && inertial_pos.y() >= min_lane_y) {
         result = i;
         lane_found = true;
       }
@@ -103,8 +111,7 @@ int RoadGeometry::GetLaneIndex(const api::InertialPosition& inertial_pos) const 
     // Checks whether `inertial_pos` is on the left shoulder. If it is, save the
     // index of the left-most lane in `result`.
     if (lane->to_left() == nullptr) {
-      if (inertial_pos.y() >= lane->y_offset() + lane->lane_bounds(0).max() &&
-          inertial_pos.y() <= lane->y_offset() + lane->segment_bounds(0).max()) {
+      if (inertial_pos.y() >= max_lane_y && inertial_pos.y() <= max_segment_y) {
         result = i;
         lane_found = true;
       }
@@ -124,20 +131,20 @@ api::RoadPositionResult RoadGeometry::DoToRoadPosition(const api::InertialPositi
   maliput::common::unused(hint);
 
   // Computes the dragway's (x,y) segment surface coordinates.
-  MALIPUT_DEMAND(junction_.num_segments() > 0);
+  MALIPUT_THROW_UNLESS(junction_.num_segments() > 0);
   const api::Segment* segment = junction_.segment(0);
-  MALIPUT_DEMAND(segment != nullptr);
-  MALIPUT_DEMAND(segment->num_lanes() > 0);
+  MALIPUT_THROW_UNLESS(segment != nullptr);
+  MALIPUT_THROW_UNLESS(segment->num_lanes() > 0);
   const Lane* lane = dynamic_cast<const Lane*>(segment->lane(0));
-  MALIPUT_DEMAND(lane != nullptr);
+  MALIPUT_THROW_UNLESS(lane != nullptr);
   const double length = lane->length();
   const api::RBounds lane_segment_bounds = lane->segment_bounds(0 /* s */);
-  const double min_y = lane->y_offset() + lane_segment_bounds.min();
-  const double max_y = lane->y_offset() + lane_segment_bounds.max();
-  const double min_x = 0;
-  const double max_x = length;
-  const double min_z = lane->elevation_bounds(0, 0).min();
-  const double max_z = lane->elevation_bounds(0, 0).max();
+  const double min_y = lane->y_offset() + lane_segment_bounds.min() + inertial_to_backend_frame_translation_.y();
+  const double max_y = lane->y_offset() + lane_segment_bounds.max() + inertial_to_backend_frame_translation_.y();
+  const double min_x = inertial_to_backend_frame_translation_.x();
+  const double max_x = length + inertial_to_backend_frame_translation_.x();
+  const double min_z = lane->elevation_bounds(0, 0).min() + inertial_to_backend_frame_translation_.z();
+  const double max_z = lane->elevation_bounds(0, 0).max() + inertial_to_backend_frame_translation_.z();
 
   /*
       A figure of a typical dragway is shown below. The minimum and maximum
@@ -175,10 +182,11 @@ api::RoadPositionResult RoadGeometry::DoToRoadPosition(const api::InertialPositi
 
   const int closest_lane_index = GetLaneIndex(closest_position);
   const Lane* closest_lane = dynamic_cast<const Lane*>(junction_.segment(0)->lane(closest_lane_index));
-  MALIPUT_DEMAND(closest_lane != nullptr);
-  const api::LanePosition closest_lane_position(closest_position.x() /* s */,
-                                                closest_position.y() - closest_lane->y_offset() /* r */,
-                                                closest_position.z() /* h */);
+  MALIPUT_THROW_UNLESS(closest_lane != nullptr);
+  const api::LanePosition closest_lane_position =
+      api::LanePosition::FromSrh(closest_position.xyz() - inertial_to_backend_frame_translation_ +
+                                 math::Vector3{0., -closest_lane->y_offset(), 0.});
+
   return api::RoadPositionResult{api::RoadPosition(closest_lane, closest_lane_position), closest_position,
                                  (inertial_pos.xyz() - closest_position.xyz()).norm()};
 }

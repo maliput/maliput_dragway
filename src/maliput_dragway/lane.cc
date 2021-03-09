@@ -79,30 +79,29 @@ api::Rotation Lane::DoGetOrientation(const api::LanePosition&) const {
 }
 
 api::LanePositionResult Lane::DoToLanePosition(const api::InertialPosition& inertial_pos) const {
-  const double min_x{0.};
-  const double max_x{length_};
-  const double min_y{segment_bounds_.min() + y_offset_};
-  const double max_y{segment_bounds_.max() + y_offset_};
-  const double min_z{elevation_bounds_.min()};
-  const double max_z{elevation_bounds_.max()};
-
   const math::Vector3 inertial_to_backend_frame_translation =
       segment()->junction()->road_geometry()->inertial_to_backend_frame_translation();
-  const math::Vector3 backend_pos = inertial_pos.xyz() - inertial_to_backend_frame_translation;
 
-  const double x = backend_pos.x();
-  const double y = backend_pos.y();
-  const double z = backend_pos.z();
+  const double min_x{inertial_to_backend_frame_translation.x()};
+  const double max_x{length_ + inertial_to_backend_frame_translation.x()};
+  const double min_y{segment_bounds_.min() + y_offset_ + inertial_to_backend_frame_translation.y()};
+  const double max_y{segment_bounds_.max() + y_offset_ + inertial_to_backend_frame_translation.y()};
+  const double min_z{elevation_bounds_.min() + inertial_to_backend_frame_translation.z()};
+  const double max_z{elevation_bounds_.max() + inertial_to_backend_frame_translation.z()};
+
+  const double x = inertial_pos.x();
+  const double y = inertial_pos.y();
+  const double z = inertial_pos.z();
 
   api::LanePositionResult result;
   result.nearest_position = {math::saturate(x, min_x, max_x), math::saturate(y, min_y, max_y),
                              math::saturate(z, min_z, max_z)};
 
-  const double distance_unsat = (backend_pos - result.nearest_position.xyz()).norm();
+  const double distance_unsat = (inertial_pos.xyz() - result.nearest_position.xyz()).norm();
   result.distance = std::max(0., distance_unsat);
 
-  result.lane_position = {result.nearest_position.x(), result.nearest_position.y() - y_offset_,
-                          result.nearest_position.z()};
+  result.lane_position = api::LanePosition::FromSrh(
+      result.nearest_position.xyz() - inertial_to_backend_frame_translation + math::Vector3{0., -y_offset_, 0.});
 
   return result;
 }
