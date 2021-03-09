@@ -19,7 +19,7 @@ namespace dragway {
 
 RoadGeometry::RoadGeometry(const api::RoadGeometryId& id, int num_lanes, double length, double lane_width,
                            double shoulder_width, double maximum_height, double linear_tolerance,
-                           double angular_tolerance)
+                           double angular_tolerance, const math::Vector3& inertial_to_backend_frame_translation)
     : id_(id),
       linear_tolerance_(linear_tolerance),
       angular_tolerance_(angular_tolerance),
@@ -30,6 +30,7 @@ RoadGeometry::RoadGeometry(const api::RoadGeometryId& id, int num_lanes, double 
       //                          `road_width`, then use the max of length and
       //                          width.
       scale_length_(length),
+      inertial_to_backend_frame_translation_(inertial_to_backend_frame_translation),
       junction_(this, num_lanes, length, lane_width, shoulder_width, maximum_height) {
   MALIPUT_DEMAND(length > 0);
   MALIPUT_DEMAND(lane_width > 0);

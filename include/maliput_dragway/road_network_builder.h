@@ -21,6 +21,8 @@ struct RoadGeometryConfiguration {
   double shoulder_width{3.};
   /// Maximum height above the road surface.
   double maximum_height{5.2};
+  /// Inertial to Backend Frame translation.
+  math::Vector3 inertial_to_backend_frame_translation{0., 0., 0.};
 };
 
 /// Builds an api::RoadNetwork based on Dragway implementation.

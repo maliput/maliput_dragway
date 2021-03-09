@@ -13,7 +13,8 @@ namespace dragway {
 DragwayBasedTest::DragwayBasedTest()
     : dragway_(RoadGeometryId("my_dragway"), kNumLanes, kLength, kLaneWidth, kShoulderWidth, kMaxHeight,
                std::numeric_limits<double>::epsilon() /* linear_tolerance */,
-               std::numeric_limits<double>::epsilon() /* angular_tolerance */),
+               std::numeric_limits<double>::epsilon() /* angular_tolerance */,
+               math::Vector3(0., 0., 0.) /* inertial_to_backend_frame_translation */),
       right_lane_(dragway_.ToRoadPosition(InertialPosition(0, -kLaneWidth, 0)).road_position.lane),
       center_lane_(dragway_.ToRoadPosition(InertialPosition(0, 0, 0)).road_position.lane),
       left_lane_(dragway_.ToRoadPosition(InertialPosition(0, kLaneWidth, 0)).road_position.lane) {}

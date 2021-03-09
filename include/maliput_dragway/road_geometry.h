@@ -11,6 +11,7 @@
 #include "maliput/api/lane_data.h"
 #include "maliput/api/road_geometry.h"
 #include "maliput/common/maliput_copyable.h"
+#include "maliput/math/vector.h"
 #include "maliput_dragway/branch_point.h"
 #include "maliput_dragway/junction.h"
 
@@ -49,7 +50,8 @@ class RoadGeometry final : public api::RoadGeometry {
   /// measurements (orientations).
   ///
   RoadGeometry(const api::RoadGeometryId& id, int num_lanes, double length, double lane_width, double shoulder_width,
-               double maximum_height, double linear_tolerance, double angular_tolerance);
+               double maximum_height, double linear_tolerance, double angular_tolerance,
+               const math::Vector3& inertial_to_backend_frame_translation);
 
   ~RoadGeometry() final = default;
 
@@ -80,6 +82,10 @@ class RoadGeometry final : public api::RoadGeometry {
 
   double do_scale_length() const final { return scale_length_; }
 
+  math::Vector3 do_inertial_to_backend_frame_translation() const override {
+    return inertial_to_backend_frame_translation_;
+  }
+
   // Returns true iff `inertial_pos` is "on" the dragway. It is on the dragway iff
   // `inertial_pos.x` and `inertial_pos.y` fall within the dragway's segment surface.
   bool IsInertialPositionOnDragway(const api::InertialPosition& inertial_pos) const;
@@ -93,6 +99,7 @@ class RoadGeometry final : public api::RoadGeometry {
   const double linear_tolerance_{};
   const double angular_tolerance_{};
   const double scale_length_{};
+  const math::Vector3 inertial_to_backend_frame_translation_{};
   const Junction junction_;
   api::BasicIdIndex id_index_;
 };

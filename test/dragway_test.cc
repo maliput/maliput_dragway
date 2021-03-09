@@ -47,7 +47,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
   void MakeDragway(int num_lanes) {
     const api::RoadGeometryId road_geometry_id(std::to_string(num_lanes) + "LaneDragwayRoadGeometry");
     road_geometry_.reset(new RoadGeometry(road_geometry_id, num_lanes, length_, lane_width_, shoulder_width_,
-                                          maximum_height_, kLinearTolerance, kAngularTolerance));
+                                          maximum_height_, kLinearTolerance, kAngularTolerance,
+                                          kInertialToBackendFrameTranslation));
 
     const api::Junction* junction = road_geometry_->junction(0);
     ASSERT_NE(junction, nullptr);
@@ -274,6 +275,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
   const double kLinearTolerance = 1e-15;
 
   const double kAngularTolerance = std::numeric_limits<double>::epsilon();
+
+  const math::Vector3 kInertialToBackendFrameTranslation{0., 0., 0.};
 
   // For tests involving ToLanePosition().
   std::vector<double> x_test_cases_{};
@@ -560,12 +563,15 @@ class MaliputDragwayFindRoadPositionTest : public ::testing::TestWithParam<FindR
 
   const double kAngularTolerance = std::numeric_limits<double>::epsilon();
 
+  const math::Vector3 kInertialToBackendFrameTranslation{0., 0., 0.};
+
   static std::vector<FindRoadPositionsTestParameters> TestParameters();
 
   void MakeDragway(int num_lanes) {
     const api::RoadGeometryId road_geometry_id(std::to_string(num_lanes) + "LaneDragwayRoadGeometry");
     road_geometry_.reset(new RoadGeometry(road_geometry_id, num_lanes, kLength, kLaneWidth, kShoulderWidth,
-                                          kMaximumHeight, kLinearTolerance, kAngularTolerance));
+                                          kMaximumHeight, kLinearTolerance, kAngularTolerance,
+                                          kInertialToBackendFrameTranslation));
   }
 
  protected:
