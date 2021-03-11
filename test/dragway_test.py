@@ -27,13 +27,15 @@ def make_test_dragway(lane_width, length):
     kShoulderWidth = 1.
     kHeight = 5.
     kTol = 1e-6
+    kInertialToBackendFrameTranslation = Vector3(0., 0., 0.)
 
     rg_id = RoadGeometryId("two_lane_road")
     return create_dragway(
         road_id=rg_id, num_lanes=kNumLanes, length=length,
         lane_width=lane_width, shoulder_width=kShoulderWidth,
         maximum_height=kHeight, linear_tolerance=kTol,
-        angular_tolerance=kTol)
+        angular_tolerance=kTol,
+        inertial_to_backend_frame_translation=kInertialToBackendFrameTranslation)
 
 # Returns true when `a` and `b` are element wise equal.
 def are_vector3_equal(a, b):

@@ -17,6 +17,7 @@
 #include "maliput/base/traffic_light_book_loader.h"
 #include "maliput/common/logger.h"
 #include "maliput/common/maliput_abort.h"
+#include "maliput/math/vector.h"
 
 #include "maliput_dragway/road_geometry.h"
 
@@ -29,7 +30,8 @@ std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfi
       api::RoadGeometryId{"Dragway with " + std::to_string(road_geometry_configuration.num_lanes) + " lanes."},
       road_geometry_configuration.num_lanes, road_geometry_configuration.length, road_geometry_configuration.lane_width,
       road_geometry_configuration.shoulder_width, road_geometry_configuration.maximum_height,
-      std::numeric_limits<double>::epsilon(), std::numeric_limits<double>::epsilon());
+      std::numeric_limits<double>::epsilon(), std::numeric_limits<double>::epsilon(),
+      road_geometry_configuration.inertial_to_backend_frame_translation);
 
   std::unique_ptr<ManualRulebook> rulebook = std::make_unique<ManualRulebook>();
   std::unique_ptr<TrafficLightBook> traffic_light_book = std::make_unique<TrafficLightBook>();

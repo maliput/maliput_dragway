@@ -19,12 +19,14 @@ PYBIND11_MODULE(dragway, m) {
 
   m.def("create_dragway",
         [](api::RoadGeometryId road_id, int num_lanes, double length, double lane_width, double shoulder_width,
-           double maximum_height, double linear_tolerance, double angular_tolerance) {
+           double maximum_height, double linear_tolerance, double angular_tolerance,
+           const math::Vector3& inertial_to_backend_frame_translation) {
           return make_unique<RoadGeometry>(road_id, num_lanes, length, lane_width, shoulder_width, maximum_height,
-                                           linear_tolerance, angular_tolerance);
+                                           linear_tolerance, angular_tolerance, inertial_to_backend_frame_translation);
         },
         py::arg("road_id"), py::arg("num_lanes"), py::arg("length"), py::arg("lane_width"), py::arg("shoulder_width"),
-        py::arg("maximum_height"), py::arg("linear_tolerance"), py::arg("angular_tolerance"));
+        py::arg("maximum_height"), py::arg("linear_tolerance"), py::arg("angular_tolerance"),
+        py::arg("inertial_to_backend_frame_translation"));
 }
 
 }  // namespace bindings

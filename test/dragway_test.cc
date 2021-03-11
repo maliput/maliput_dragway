@@ -47,7 +47,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
   void MakeDragway(int num_lanes) {
     const api::RoadGeometryId road_geometry_id(std::to_string(num_lanes) + "LaneDragwayRoadGeometry");
     road_geometry_.reset(new RoadGeometry(road_geometry_id, num_lanes, length_, lane_width_, shoulder_width_,
-                                          maximum_height_, kLinearTolerance, kAngularTolerance));
+                                          maximum_height_, kLinearTolerance, kAngularTolerance,
+                                          kInertialToBackendFrameTranslation));
 
     const api::Junction* junction = road_geometry_->junction(0);
     ASSERT_NE(junction, nullptr);
@@ -274,6 +275,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
   const double kLinearTolerance = 1e-15;
 
   const double kAngularTolerance = std::numeric_limits<double>::epsilon();
+
+  const math::Vector3 kInertialToBackendFrameTranslation{0., 0., 0.};
 
   // For tests involving ToLanePosition().
   std::vector<double> x_test_cases_{};
@@ -560,12 +563,15 @@ class MaliputDragwayFindRoadPositionTest : public ::testing::TestWithParam<FindR
 
   const double kAngularTolerance = std::numeric_limits<double>::epsilon();
 
+  const math::Vector3 kInertialToBackendFrameTranslation{0., 0., 0.};
+
   static std::vector<FindRoadPositionsTestParameters> TestParameters();
 
   void MakeDragway(int num_lanes) {
     const api::RoadGeometryId road_geometry_id(std::to_string(num_lanes) + "LaneDragwayRoadGeometry");
     road_geometry_.reset(new RoadGeometry(road_geometry_id, num_lanes, kLength, kLaneWidth, kShoulderWidth,
-                                          kMaximumHeight, kLinearTolerance, kAngularTolerance));
+                                          kMaximumHeight, kLinearTolerance, kAngularTolerance,
+                                          kInertialToBackendFrameTranslation));
   }
 
  protected:
@@ -724,6 +730,72 @@ TEST_P(MaliputDragwayFindRoadPositionTest, FindRoadPositionsWithOneLane) {
 
 INSTANTIATE_TEST_CASE_P(MaliputDragwayFindLaneMappingsTestGroup, MaliputDragwayFindRoadPositionTest,
                         ::testing::ValuesIn(MaliputDragwayFindRoadPositionTest::TestParameters()));
+
+class DragwayWithInertialToBackendFrameTranslation : public ::testing::Test {
+ protected:
+  void SetUp() override { lane_ = dut_.junction(0)->segment(0)->lane(0); }
+  // The following linear tolerance was empirically derived on a 64-bit Ubuntu
+  // system. It is necessary due to inaccuracies in floating point calculations
+  // and different ways of computing the segment r_min and r_max.
+  const double kLinearTolerance{1e-15};
+  const double kAngularTolerance{std::numeric_limits<double>::epsilon()};
+  const math::Vector3& kInertialToBackendFrameTranslation{1.2, -3.4, 0.5};
+  const RoadGeometry dut_{api::RoadGeometryId("non zero translation"),
+                          1 /* num_lanes */,
+                          10. /* length */,
+                          5. /* lane_width */,
+                          0. /* shoulder_width */,
+                          5. /* maximum_height */,
+                          kLinearTolerance,
+                          kAngularTolerance,
+                          kInertialToBackendFrameTranslation};
+  const api::Lane* lane_{};
+};
+
+TEST_F(DragwayWithInertialToBackendFrameTranslation, ToInertialPosition) {
+  EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5),
+                                                 lane_->ToInertialPosition({0., 0., 0.}), kLinearTolerance));
+  EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5),
+                                                 lane_->ToInertialPosition({10., 0., 0.}), kLinearTolerance));
+}
+
+TEST_F(DragwayWithInertialToBackendFrameTranslation, ToLanePosition) {
+  {
+    const api::LanePositionResult result = lane_->ToLanePosition({1.2, -3.4, 0.5});
+    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(0., 0., 0.), result.lane_position, kLinearTolerance));
+    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5), result.nearest_position,
+                                                   kLinearTolerance));
+    EXPECT_NEAR(0., result.distance, kLinearTolerance);
+  }
+  {
+    const api::LanePositionResult result = lane_->ToLanePosition({11.2, -3.4, 0.5});
+    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(10., 0., 0.), result.lane_position, kLinearTolerance));
+    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5), result.nearest_position,
+                                                   kLinearTolerance));
+    EXPECT_NEAR(0., result.distance, kLinearTolerance);
+  }
+}
+
+TEST_F(DragwayWithInertialToBackendFrameTranslation, ToRoadPosition) {
+  {
+    const api::RoadPositionResult result = dut_.ToRoadPosition({1.2, -3.4, 0.5}, std::nullopt);
+    EXPECT_EQ(lane_, result.road_position.lane);
+    EXPECT_TRUE(
+        api::test::IsLanePositionClose(api::LanePosition(0., 0., 0.), result.road_position.pos, kLinearTolerance));
+    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5), result.nearest_position,
+                                                   kLinearTolerance));
+    EXPECT_NEAR(0., result.distance, kLinearTolerance);
+  }
+  {
+    const api::RoadPositionResult result = dut_.ToRoadPosition({11.2, -3.4, 0.5});
+    EXPECT_EQ(lane_, result.road_position.lane);
+    EXPECT_TRUE(
+        api::test::IsLanePositionClose(api::LanePosition(10., 0., 0.), result.road_position.pos, kLinearTolerance));
+    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5), result.nearest_position,
+                                                   kLinearTolerance));
+    EXPECT_NEAR(0., result.distance, kLinearTolerance);
+  }
+}
 
 }  // namespace
 }  // namespace dragway
