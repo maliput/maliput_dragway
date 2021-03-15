@@ -739,7 +739,6 @@ class DragwayWithInertialToBackendFrameTranslation : public ::testing::Test {
   // and different ways of computing the segment r_min and r_max.
   const double kLinearTolerance{1e-15};
   const double kAngularTolerance{std::numeric_limits<double>::epsilon()};
-  const math::Vector3& kInertialToBackendFrameTranslation{1.2, -3.4, 0.5};
   const RoadGeometry dut_{api::RoadGeometryId("non zero translation"),
                           1 /* num_lanes */,
                           10. /* length */,
@@ -748,7 +747,7 @@ class DragwayWithInertialToBackendFrameTranslation : public ::testing::Test {
                           5. /* maximum_height */,
                           kLinearTolerance,
                           kAngularTolerance,
-                          kInertialToBackendFrameTranslation};
+                          {1.2, -3.4, 0.5} /* inertial to backend frame translation */};
   const api::Lane* lane_{};
 };
 
