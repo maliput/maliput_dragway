@@ -22,7 +22,7 @@ jobs:
       image: ubuntu:18.04
     strategy:
       matrix:
-        sanitizer: [none, asan, ubsan, tsan]
+        sanitizer: [none, asan, ubsan]
         include:
           - sanitizer: none
             COMPILER_FLAG: ''
