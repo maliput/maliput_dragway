@@ -1,9 +1,6 @@
 name: clang
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     types: [labeled]
 
