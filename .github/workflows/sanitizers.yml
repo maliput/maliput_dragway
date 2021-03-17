@@ -25,8 +25,6 @@ jobs:
             COMPILER_FLAG: ''
           - sanitizer: asan
             COMPILER_FLAG: ' -DADDRESS_SANITIZER=On'
-          - sanitizer: tsan
-            COMPILER_FLAG: ' -DTHREAD_SANITIZER=On'
           - sanitizer: ubsan
             COMPILER_FLAG: ' -DUNDEFINED_SANITIZER=On'
     env:
