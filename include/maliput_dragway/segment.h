@@ -4,11 +4,11 @@
 #include <utility>
 #include <vector>
 
-#include "maliput/api/junction.h"
-#include "maliput/api/lane.h"
-#include "maliput/api/lane_data.h"
-#include "maliput/api/segment.h"
-#include "maliput/common/maliput_copyable.h"
+#include <maliput/api/junction.h>
+#include <maliput/api/lane.h>
+#include <maliput/api/lane_data.h>
+#include <maliput/api/segment.h>
+#include <maliput/common/maliput_copyable.h>
 #include "maliput_dragway/lane.h"
 
 namespace maliput {

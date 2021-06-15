@@ -5,18 +5,18 @@
 
 #include <gtest/gtest.h>
 
-#include "maliput/api/junction.h"
-#include "maliput/api/lane.h"
-#include "maliput/api/lane_data.h"
-#include "maliput/api/road_geometry.h"
-#include "maliput/api/road_network.h"
-#include "maliput/api/segment.h"
-#include "maliput/plugin/maliput_plugin.h"
-#include "maliput/plugin/maliput_plugin_manager.h"
-#include "maliput/plugin/maliput_plugin_type.h"
-#include "maliput/plugin/road_network_loader.h"
-#include "maliput/test_utilities/maliput_math_compare.h"
-#include "maliput/test_utilities/maliput_types_compare.h"
+#include <maliput/api/junction.h>
+#include <maliput/api/lane.h>
+#include <maliput/api/lane_data.h>
+#include <maliput/api/road_geometry.h>
+#include <maliput/api/road_network.h>
+#include <maliput/api/segment.h>
+#include <maliput/plugin/maliput_plugin.h>
+#include <maliput/plugin/maliput_plugin_manager.h>
+#include <maliput/plugin/maliput_plugin_type.h>
+#include <maliput/plugin/road_network_loader.h>
+#include <maliput/test_utilities/maliput_math_compare.h>
+#include <maliput/test_utilities/maliput_types_compare.h>
 
 namespace maliput {
 namespace dragway {

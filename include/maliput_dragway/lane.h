@@ -3,8 +3,8 @@
 #include <memory>
 #include <optional>
 
-#include "maliput/api/branch_point.h"
-#include "maliput/api/lane.h"
+#include <maliput/api/branch_point.h>
+#include <maliput/api/lane.h>
 
 namespace maliput {
 namespace dragway {

@@ -5,9 +5,9 @@
 
 #include <gtest/gtest.h>
 
-#include "maliput/common/assertion_error.h"
-#include "maliput/test_utilities/check_id_indexing.h"
-#include "maliput/test_utilities/maliput_types_compare.h"
+#include <maliput/common/assertion_error.h>
+#include <maliput/test_utilities/check_id_indexing.h>
+#include <maliput/test_utilities/maliput_types_compare.h>
 
 #include "maliput_dragway/branch_point.h"
 #include "maliput_dragway/junction.h"
