@@ -4,7 +4,6 @@
 #include <string>
 
 #include <gtest/gtest.h>
-
 #include <maliput/api/junction.h>
 #include <maliput/api/lane.h>
 #include <maliput/api/lane_data.h>

@@ -1,6 +1,6 @@
-#include <optional>
-
 #include "maliput_dragway/branch_point.h"
+
+#include <optional>
 
 #include "maliput_dragway/lane.h"
 

@@ -12,6 +12,7 @@
 #include <maliput/api/road_geometry.h>
 #include <maliput/common/maliput_copyable.h>
 #include <maliput/math/vector.h>
+
 #include "maliput_dragway/branch_point.h"
 #include "maliput_dragway/junction.h"
 

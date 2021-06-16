@@ -1,6 +1,6 @@
+#include <maliput/api/road_geometry.h>
 #include <pybind11/pybind11.h>
 
-#include <maliput/api/road_geometry.h>
 #include "maliput_dragway/road_geometry.h"
 
 namespace maliput {
