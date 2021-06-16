@@ -9,6 +9,7 @@
 #include <maliput/api/lane_data.h>
 #include <maliput/api/segment.h>
 #include <maliput/common/maliput_copyable.h>
+
 #include "maliput_dragway/lane.h"
 
 namespace maliput {
