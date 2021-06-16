@@ -3,8 +3,8 @@
 #include <memory>
 #include <string>
 
-#include "maliput/common/maliput_throw.h"
-#include "maliput/plugin/road_network_loader.h"
+#include <maliput/common/maliput_throw.h>
+#include <maliput/plugin/road_network_loader.h>
 #include "maliput_dragway/road_network_builder.h"
 
 namespace maliput {

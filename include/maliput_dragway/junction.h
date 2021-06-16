@@ -3,12 +3,12 @@
 #include <memory>
 #include <vector>
 
-#include "maliput/api/junction.h"
-#include "maliput/api/lane_data.h"
-#include "maliput/api/road_geometry.h"
-#include "maliput/api/segment.h"
-#include "maliput/common/maliput_abort.h"
-#include "maliput/common/maliput_copyable.h"
+#include <maliput/api/junction.h>
+#include <maliput/api/lane_data.h>
+#include <maliput/api/road_geometry.h>
+#include <maliput/api/segment.h>
+#include <maliput/common/maliput_abort.h>
+#include <maliput/common/maliput_copyable.h>
 
 #include "maliput_dragway/segment.h"
 

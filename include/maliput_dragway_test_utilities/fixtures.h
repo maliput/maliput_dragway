@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "maliput/api/lane.h"
+#include <maliput/api/lane.h>
 #include "maliput_dragway/road_geometry.h"
 
 namespace maliput {
