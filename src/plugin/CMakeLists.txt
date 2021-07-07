@@ -10,10 +10,6 @@ set_target_properties(road_network
     OUTPUT_NAME maliput_dragway_road_network
 )
 
-ament_target_dependencies(maliput_dragway
-    "maliput"
-)
-
 target_link_libraries(road_network
   maliput::api
   maliput::base
