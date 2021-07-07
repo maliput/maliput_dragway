@@ -17,6 +17,7 @@ PYBIND11_MODULE(dragway, m) {
 
   py::class_<RoadGeometry, api::RoadGeometry>(m, "RoadGeometry");
 
+  // clang-format off
   m.def("create_dragway",
         [](api::RoadGeometryId road_id, int num_lanes, double length, double lane_width, double shoulder_width,
            double maximum_height, double linear_tolerance, double angular_tolerance,
@@ -27,6 +28,7 @@ PYBIND11_MODULE(dragway, m) {
         py::arg("road_id"), py::arg("num_lanes"), py::arg("length"), py::arg("lane_width"), py::arg("shoulder_width"),
         py::arg("maximum_height"), py::arg("linear_tolerance"), py::arg("angular_tolerance"),
         py::arg("inertial_to_backend_frame_translation"));
+  // clang-format on
 }
 
 }  // namespace bindings
