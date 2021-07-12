@@ -31,10 +31,6 @@ target_link_libraries(maliput_dragway
   maliput::geometry_base
 )
 
-ament_target_dependencies(maliput_dragway
-    "maliput"
-)
-
 ##############################################################################
 # Export
 ##############################################################################

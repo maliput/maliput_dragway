@@ -11,10 +11,6 @@ macro(add_dependencies_to_test target)
           ${PROJECT_SOURCE_DIR}/include
       )
 
-      ament_target_dependencies(${target}
-        "maliput"
-      )
-
       target_link_libraries(${target}
           maliput::test_utilities
           maliput_dragway::maliput_dragway

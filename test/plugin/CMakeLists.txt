@@ -24,9 +24,6 @@ macro(add_dependencies_to_test target)
         PROPERTIES
           ENABLE_EXPORTS ON
       )
-      ament_target_dependencies(${target}
-        "maliput"
-      )
 
       target_link_libraries(${target}
           maliput_dragway::maliput_dragway
