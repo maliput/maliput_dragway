@@ -22,7 +22,8 @@ set_target_properties(maliput_dragway
 target_include_directories(maliput_dragway
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+    $<INSTALL_INTERFACE:include>
+)
 
 target_link_libraries(maliput_dragway
   maliput::api
