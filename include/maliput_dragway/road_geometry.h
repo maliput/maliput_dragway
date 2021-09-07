@@ -50,6 +50,8 @@ class RoadGeometry final : public api::RoadGeometry {
   /// @param[in] angular_tolerance The tolerance guaranteed for angular
   /// measurements (orientations).
   ///
+  /// @param[in] inertial_to_backend_frame_translation the Inertial Frame to Backend
+  ///        Frame translation vector
   RoadGeometry(const api::RoadGeometryId& id, int num_lanes, double length, double lane_width, double shoulder_width,
                double maximum_height, double linear_tolerance, double angular_tolerance,
                const math::Vector3& inertial_to_backend_frame_translation);
