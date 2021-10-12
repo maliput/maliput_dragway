@@ -69,6 +69,8 @@ endif()
 # Export
 ##############################################################################
 
+ament_environment_hooks(setup.sh.in)
+
 install(
   DIRECTORY include/
   DESTINATION include
