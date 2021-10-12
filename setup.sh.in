@@ -51,4 +51,4 @@ add_if_not_in_var() {
 }
 
 # Extends path for the maliput plugin architecture
-add_if_not_in_var MALIPUT_PLUGIN_PATH $COLCON_PREFIX_PATH/maliput_dragway/lib/plugins:$MALIPUT_PLUGIN_PATH
+add_if_not_in_var MALIPUT_PLUGIN_PATH $COLCON_PREFIX_PATH/maliput_dragway/lib/plugins
