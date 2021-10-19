@@ -24,7 +24,7 @@
 namespace maliput {
 namespace dragway {
 
-std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration) {
+std::unique_ptr<api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration) {
   maliput::log()->debug("Building dragway RoadNetwork.");
   auto rg = std::make_unique<dragway::RoadGeometry>(
       api::RoadGeometryId{"Dragway with " + std::to_string(road_geometry_configuration.num_lanes) + " lanes."},

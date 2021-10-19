@@ -28,7 +28,7 @@ struct RoadGeometryConfiguration {
 /// Builds an api::RoadNetwork based on Dragway implementation.
 /// @param road_geometry_configuration Holds the properties to build the RoadNetwork.
 /// @return A maliput::api::RoadNetwork.
-std::unique_ptr<const api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration);
+std::unique_ptr<api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration);
 
 }  // namespace dragway
 }  // namespace maliput
