@@ -1,3 +1,5 @@
+[![GCC](https://github.com/ToyotaResearchInstitute/maliput_dragway/actions/workflows/build.yml/badge.svg)](https://github.com/ToyotaResearchInstitute/maliput_dragway/actions/workflows/build.yml)
+
 # `maliput_dragway`
 
 Maliput_dragway is an implementation of Maliput's API that allows users to instantiate
