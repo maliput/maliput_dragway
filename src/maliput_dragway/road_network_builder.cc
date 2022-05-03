@@ -38,7 +38,7 @@ std::unique_ptr<api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfigurati
   std::unique_ptr<api::rules::RuleRegistry> rule_registry = std::make_unique<api::rules::RuleRegistry>();
   std::unique_ptr<ManualPhaseRingBook> phase_ring_book = std::make_unique<ManualPhaseRingBook>();
   std::unique_ptr<ManualPhaseProvider> phase_provider = std::make_unique<ManualPhaseProvider>();
-  std::unique_ptr<IntersectionBook> intersection_book = std::make_unique<IntersectionBook>();
+  std::unique_ptr<IntersectionBook> intersection_book = std::make_unique<IntersectionBook>(rg.get());
 
   std::unique_ptr<ManualRightOfWayRuleStateProvider> right_of_way_rule_state_provider =
       std::make_unique<ManualRightOfWayRuleStateProvider>();
