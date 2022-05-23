@@ -24,5 +24,3 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
-
-ament_export_libraries(maliput_dragway_test_utilities)
