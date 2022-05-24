@@ -80,6 +80,7 @@ ament_export_include_directories(include)
 
 ament_export_dependencies(ament_cmake)
 ament_export_dependencies(maliput)
-ament_export_interfaces(${PROJECT_NAME}-targets HAS_LIBRARY_TARGET)
+ament_export_dependencies(maliput_py)
+ament_export_targets(${PROJECT_NAME}-targets HAS_LIBRARY_TARGET)
 
 ament_package()
