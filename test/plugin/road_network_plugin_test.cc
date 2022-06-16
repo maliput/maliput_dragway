@@ -27,6 +27,8 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#include <stdlib.h>
+
 #include <map>
 #include <memory>
 #include <string>
@@ -50,6 +52,7 @@ namespace dragway {
 namespace {
 
 GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
+  setenv("MALIPUT_PLUGIN_PATH", DEF_ROAD_NETWORK_PLUGIN, 1);
   const plugin::MaliputPlugin::Id kDragwayPluginId{"maliput_dragway"};
   static constexpr double kTolerance{1e-15};
   const std::map<std::string, std::string> rg_dragway_properties{
