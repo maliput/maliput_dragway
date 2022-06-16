@@ -68,8 +68,11 @@ std::unique_ptr<api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfigurati
   std::unique_ptr<ManualPhaseProvider> phase_provider = std::make_unique<ManualPhaseProvider>();
   std::unique_ptr<IntersectionBook> intersection_book = std::make_unique<IntersectionBook>(rg.get());
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   std::unique_ptr<ManualRightOfWayRuleStateProvider> right_of_way_rule_state_provider =
       std::make_unique<ManualRightOfWayRuleStateProvider>();
+#pragma GCC diagnostic pop
   std::unique_ptr<ManualDiscreteValueRuleStateProvider> discrete_value_rule_state_provider =
       std::make_unique<ManualDiscreteValueRuleStateProvider>(rulebook.get());
   std::unique_ptr<ManualRangeValueRuleStateProvider> range_value_rule_state_provider =
