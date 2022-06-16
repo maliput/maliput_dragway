@@ -34,7 +34,6 @@ include(${PROJECT_SOURCE_DIR}/cmake/SanitizersConfig.cmake)
 # Sources
 ##############################################################################
 
-add_subdirectory(include)
 add_subdirectory(src)
 
 ##############################################################################
