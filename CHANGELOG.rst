@@ -2,8 +2,8 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2022-06-16)
+------------------
 * Updates package.xml
 * Suppresses old-rule-api-related deprecation warnings. (`#71 <https://github.com/maliput/maliput_dragway/issues/71>`_)
 * Uses doc_depend label. (`#70 <https://github.com/maliput/maliput_dragway/issues/70>`_)
