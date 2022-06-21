@@ -1,3 +1,5 @@
+if(BUILD_TESTING)
+
 set(TEST_UTILS_SOURCES
   fixtures.cc)
 
@@ -24,3 +26,5 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+endif()
