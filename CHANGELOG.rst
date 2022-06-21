@@ -2,6 +2,14 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add missing dependency on python3-dev to get python.h (`#72 <https://github.com/maliput/maliput_dragway/issues/72>`_)
+  * add missing dependency on python3-dev to get python.h
+  * Compiles test utilities when BUILD_TESTING flag is on, to match gtest dependency.
+  Co-authored-by: Franco Cipollone <franco.c@ekumenlabs.com>
+* Contributors: Tully Foote
+
 0.1.0 (2022-06-16)
 ------------------
 * Updates package.xml
