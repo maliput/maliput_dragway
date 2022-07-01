@@ -2,6 +2,11 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixes environment hooks. (`#73 <https://github.com/maliput/maliput_dragway/issues/73>`_)
+* Contributors: Franco Cipollone
+
 0.1.1 (2022-06-21)
 ------------------
 * add missing dependency on python3-dev to get python.h (`#72 <https://github.com/maliput/maliput_dragway/issues/72>`_)
