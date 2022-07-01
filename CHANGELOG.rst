@@ -2,8 +2,8 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2022-07-01)
+------------------
 * Fixes environment hooks. (`#73 <https://github.com/maliput/maliput_dragway/issues/73>`_)
 * Contributors: Franco Cipollone
 
