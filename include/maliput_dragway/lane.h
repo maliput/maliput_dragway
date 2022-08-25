@@ -181,6 +181,11 @@ class Lane final : public api::Lane {
 
   api::LanePositionResult DoToLanePosition(const api::InertialPosition& inertial_pos) const final;
 
+  api::LanePositionResult DoToSegmentPosition(const api::InertialPosition& inertial_pos) const final;
+
+  api::LanePositionResult InertialToLaneSegmentPositionBackend(const api::InertialPosition& inertial_position,
+                                                               bool use_lane_boundaries) const;
+
   const Segment* segment_{};  // The segment to which this lane belongs.
   const api::LaneId id_;
   const int index_{};  // The index of this lane within a Segment.
