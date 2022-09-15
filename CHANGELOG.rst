@@ -2,8 +2,8 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2022-09-14)
+------------------
 * Matches with changes in Maliput: Lane::ToLanePosition. (`#76 <https://github.com/maliput/maliput_dragway/issues/76>`_)
 * Adds triage workflow. (`#75 <https://github.com/maliput/maliput_dragway/issues/75>`_)
 * Improves README. (`#74 <https://github.com/maliput/maliput_dragway/issues/74>`_)
