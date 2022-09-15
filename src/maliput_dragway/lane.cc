@@ -108,13 +108,24 @@ api::Rotation Lane::DoGetOrientation(const api::LanePosition&) const {
 }
 
 api::LanePositionResult Lane::DoToLanePosition(const api::InertialPosition& inertial_pos) const {
+  return InertialToLaneSegmentPositionBackend(inertial_pos, true);
+}
+
+api::LanePositionResult Lane::DoToSegmentPosition(const api::InertialPosition& inertial_pos) const {
+  return InertialToLaneSegmentPositionBackend(inertial_pos, false);
+}
+
+api::LanePositionResult Lane::InertialToLaneSegmentPositionBackend(const api::InertialPosition& inertial_pos,
+                                                                   bool use_lane_boundaries) const {
   const math::Vector3 inertial_to_backend_frame_translation =
       segment()->junction()->road_geometry()->inertial_to_backend_frame_translation();
 
   const double min_x{inertial_to_backend_frame_translation.x()};
   const double max_x{length_ + inertial_to_backend_frame_translation.x()};
-  const double min_y{segment_bounds_.min() + y_offset_ + inertial_to_backend_frame_translation.y()};
-  const double max_y{segment_bounds_.max() + y_offset_ + inertial_to_backend_frame_translation.y()};
+  const double min_y{(use_lane_boundaries ? lane_bounds_.min() : segment_bounds_.min()) + y_offset_ +
+                     inertial_to_backend_frame_translation.y()};
+  const double max_y{(use_lane_boundaries ? lane_bounds_.max() : segment_bounds_.max()) + y_offset_ +
+                     inertial_to_backend_frame_translation.y()};
   const double min_z{elevation_bounds_.min() + inertial_to_backend_frame_translation.z()};
   const double max_z{elevation_bounds_.max() + inertial_to_backend_frame_translation.z()};
 
