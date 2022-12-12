@@ -38,8 +38,57 @@
 namespace maliput {
 namespace dragway {
 
+/// @defgroup road_geometry_configuration_keys RoadGeometry configuration builder keys
+///
+/// Parameters used during the RoadGeometry building process.
+///
+/// When parameters are omitted the default value will be used.
+///
+/// Example of use:
+/// @code{cpp}
+/// const std::map<std::string, std::string> builder_configuration {
+///   {"maliput::dragway::kNumLanes", "4"},
+///   {"maliput::dragway::kLength", "150"},
+///   {"maliput::dragway::kLaneWidth", "3"},
+/// };
+/// auto road_network = maliput::dragway::BuildRoadNetwork::(builder_configuration)();
+/// @endcode
+///
+/// @{
+
+/// Number of lanes.
+///   - Default: @e "2"
+static constexpr char const* kNumLanes{"num_lanes"};
+/// Length of the dragway.
+///   - Default: @e "10"
+static constexpr char const* kLength{"length"};
+/// Width of the lanes.
+///   - Default: @e "3.7"
+static constexpr char const* kLaneWidth{"lane_width"};
+/// Width of the shoulders of the road.
+///   - Default: @e "3."
+static constexpr char const* kShoulderWidth{"shoulder_width"};
+/// Maximum height above the road surface.
+///   - Default: @e "5.2"
+static constexpr char const* kMaximumHeight{"maximum_height"};
+/// Translation from maliput to maliput_osm inertial frame.
+/// The format of the 3-dimensional vector that is expected to be passed
+/// should be {X, Y, Z}. Same format as maliput::math::Vector3 is
+/// serialized.
+///   - Default: @e "{0., 0., 0.}"
+static constexpr char const* kInertialToBackendFrameTranslation{"inertial_to_backend_frame_translation"};
+
+/// @}
+
 /// Contains the attributes needed for building a dragway::RoadGeometry.
 struct RoadGeometryConfiguration {
+  /// Create a RoadGeometryConfiguration from a string dictionary.
+  static maliput::dragway::RoadGeometryConfiguration FromMap(const std::map<std::string, std::string>& parameters);
+
+  /// @details The keys of the map are listed at @ref road_geometry_configuration_keys.
+  /// @returns A string-string map containing the road geometry configuration.
+  std::map<std::string, std::string> ToStringMap() const;
+
   /// Number of lanes.
   int num_lanes{2};
   /// Length of the lanes.

@@ -52,6 +52,46 @@
 namespace maliput {
 namespace dragway {
 
+RoadGeometryConfiguration RoadGeometryConfiguration::FromMap(const std::map<std::string, std::string>& parameters) {
+  RoadGeometryConfiguration rg_configuration{};
+  auto it = parameters.find(kNumLanes);
+  if (it != parameters.end()) {
+    rg_configuration.num_lanes = std::stoi(it->second);
+  }
+  it = parameters.find(kLength);
+  if (it != parameters.end()) {
+    rg_configuration.length = std::stod(it->second);
+  }
+  it = parameters.find(kLaneWidth);
+  if (it != parameters.end()) {
+    rg_configuration.lane_width = std::stod(it->second);
+  }
+  it = parameters.find(kShoulderWidth);
+  if (it != parameters.end()) {
+    rg_configuration.shoulder_width = std::stod(it->second);
+  }
+  it = parameters.find(kMaximumHeight);
+  if (it != parameters.end()) {
+    rg_configuration.maximum_height = std::stod(it->second);
+  }
+  it = parameters.find(kInertialToBackendFrameTranslation);
+  if (it != parameters.end()) {
+    rg_configuration.inertial_to_backend_frame_translation = maliput::math::Vector3::FromStr(it->second);
+  }
+  return rg_configuration;
+}
+
+std::map<std::string, std::string> RoadGeometryConfiguration::ToStringMap() const {
+  std::map<std::string, std::string> parameters;
+  parameters[kNumLanes] = std::to_string(num_lanes);
+  parameters[kLength] = std::to_string(length);
+  parameters[kLaneWidth] = std::to_string(lane_width);
+  parameters[kShoulderWidth] = std::to_string(shoulder_width);
+  parameters[kMaximumHeight] = std::to_string(maximum_height);
+  parameters[kInertialToBackendFrameTranslation] = inertial_to_backend_frame_translation.to_str();
+  return parameters;
+}
+
 std::unique_ptr<api::RoadNetwork> BuildRoadNetwork(const RoadGeometryConfiguration& road_geometry_configuration) {
   maliput::log()->debug("Building dragway RoadNetwork.");
   auto rg = std::make_unique<dragway::RoadGeometry>(
