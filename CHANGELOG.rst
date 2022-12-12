@@ -2,8 +2,8 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2022-12-12)
+------------------
 * Implements plugin interface for providing default parameters. (`#79 <https://github.com/maliput/maliput_dragway/issues/79>`_)
 * Updates triage workflow. (`#77 <https://github.com/maliput/maliput_dragway/issues/77>`_)
 * Contributors: Franco Cipollone
