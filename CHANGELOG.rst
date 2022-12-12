@@ -2,6 +2,12 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Implements plugin interface for providing default parameters. (`#79 <https://github.com/maliput/maliput_dragway/issues/79>`_)
+* Updates triage workflow. (`#77 <https://github.com/maliput/maliput_dragway/issues/77>`_)
+* Contributors: Franco Cipollone
+
 0.1.3 (2022-09-14)
 ------------------
 * Matches with changes in Maliput: Lane::ToLanePosition. (`#76 <https://github.com/maliput/maliput_dragway/issues/76>`_)
