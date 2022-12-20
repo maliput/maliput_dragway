@@ -47,6 +47,7 @@
 #include <maliput/common/maliput_abort.h>
 #include <maliput/math/vector.h>
 
+#include "maliput_dragway/params.h"
 #include "maliput_dragway/road_geometry.h"
 
 namespace maliput {
