@@ -55,27 +55,27 @@ namespace dragway {
 
 RoadGeometryConfiguration RoadGeometryConfiguration::FromMap(const std::map<std::string, std::string>& parameters) {
   RoadGeometryConfiguration rg_configuration{};
-  auto it = parameters.find(kNumLanes);
+  auto it = parameters.find(params::kNumLanes);
   if (it != parameters.end()) {
     rg_configuration.num_lanes = std::stoi(it->second);
   }
-  it = parameters.find(kLength);
+  it = parameters.find(params::kLength);
   if (it != parameters.end()) {
     rg_configuration.length = std::stod(it->second);
   }
-  it = parameters.find(kLaneWidth);
+  it = parameters.find(params::kLaneWidth);
   if (it != parameters.end()) {
     rg_configuration.lane_width = std::stod(it->second);
   }
-  it = parameters.find(kShoulderWidth);
+  it = parameters.find(params::kShoulderWidth);
   if (it != parameters.end()) {
     rg_configuration.shoulder_width = std::stod(it->second);
   }
-  it = parameters.find(kMaximumHeight);
+  it = parameters.find(params::kMaximumHeight);
   if (it != parameters.end()) {
     rg_configuration.maximum_height = std::stod(it->second);
   }
-  it = parameters.find(kInertialToBackendFrameTranslation);
+  it = parameters.find(params::kInertialToBackendFrameTranslation);
   if (it != parameters.end()) {
     rg_configuration.inertial_to_backend_frame_translation = maliput::math::Vector3::FromStr(it->second);
   }
@@ -84,12 +84,12 @@ RoadGeometryConfiguration RoadGeometryConfiguration::FromMap(const std::map<std:
 
 std::map<std::string, std::string> RoadGeometryConfiguration::ToStringMap() const {
   std::map<std::string, std::string> parameters;
-  parameters[kNumLanes] = std::to_string(num_lanes);
-  parameters[kLength] = std::to_string(length);
-  parameters[kLaneWidth] = std::to_string(lane_width);
-  parameters[kShoulderWidth] = std::to_string(shoulder_width);
-  parameters[kMaximumHeight] = std::to_string(maximum_height);
-  parameters[kInertialToBackendFrameTranslation] = inertial_to_backend_frame_translation.to_str();
+  parameters[params::kNumLanes] = std::to_string(num_lanes);
+  parameters[params::kLength] = std::to_string(length);
+  parameters[params::kLaneWidth] = std::to_string(lane_width);
+  parameters[params::kShoulderWidth] = std::to_string(shoulder_width);
+  parameters[params::kMaximumHeight] = std::to_string(maximum_height);
+  parameters[params::kInertialToBackendFrameTranslation] = inertial_to_backend_frame_translation.to_str();
   return parameters;
 }
 

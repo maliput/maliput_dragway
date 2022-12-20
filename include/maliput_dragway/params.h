@@ -32,6 +32,7 @@
 
 namespace maliput {
 namespace dragway {
+namespace params {
 
 /// @defgroup road_geometry_configuration_keys RoadGeometry configuration builder keys
 ///
@@ -45,9 +46,9 @@ namespace dragway {
 /// #include <maliput_dragway/road_network_builder.h>
 /// // ...
 /// const std::map<std::string, std::string> builder_configuration {
-///   {maliput::dragway::kNumLanes, "4"},
-///   {maliput::dragway::kLength, "150"},
-///   {maliput::dragway::kLaneWidth, "3"},
+///   {maliput::dragway::params::kNumLanes, "4"},
+///   {maliput::dragway::params::kLength, "150"},
+///   {maliput::dragway::params::kLaneWidth, "3"},
 /// };
 /// auto road_network = maliput::dragway::BuildRoadNetwork(builder_configuration)();
 /// @endcode
@@ -78,5 +79,6 @@ static constexpr char const* kInertialToBackendFrameTranslation{"inertial_to_bac
 
 /// @}
 
+}  // namespace params
 }  // namespace dragway
 }  // namespace maliput
