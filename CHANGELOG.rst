@@ -2,8 +2,8 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.5 (2023-04-13)
+------------------
 * Moves builder's parameters to a separate file. (`#80 <https://github.com/maliput/maliput_dragway/issues/80>`_)
 * Contributors: Franco Cipollone
 
