@@ -2,6 +2,11 @@
 Changelog for package maliput_dragway
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Moves builder's parameters to a separate file. (`#80 <https://github.com/maliput/maliput_dragway/issues/80>`_)
+* Contributors: Franco Cipollone
+
 0.1.4 (2022-12-12)
 ------------------
 * Implements plugin interface for providing default parameters. (`#79 <https://github.com/maliput/maliput_dragway/issues/79>`_)
