@@ -99,10 +99,9 @@ bool RoadGeometry::IsInertialPositionOnDragway(const api::InertialPosition& iner
   if (inertial_pos.x() < inertial_to_backend_frame_translation_.x() ||
       inertial_pos.x() > length + +inertial_to_backend_frame_translation_.x() || inertial_pos.y() > max_y ||
       inertial_pos.y() < min_y) {
-    maliput::log()->trace(
-        "dragway::RoadGeometry::IsInertialPositionOnDragway(): The provided inertial_pos "
-        "({}, {}) is not on the dragway (length = {}, min_y = {}, max_y = {}).",
-        inertial_pos.x(), inertial_pos.y(), length, min_y, max_y);
+    maliput::log()->trace("dragway::RoadGeometry::IsInertialPositionOnDragway(): The provided inertial_pos (",
+                          inertial_pos.x(), ", ", inertial_pos.y(), ") is not on the dragway (length = ", length,
+                          ", min_y = ", min_y, ", max_y = ", max_y, ").");
     return false;
   } else {
     return true;
