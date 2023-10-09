@@ -33,10 +33,10 @@
 #include <optional>
 
 #include <gtest/gtest.h>
+#include <maliput/api/compare.h>
 #include <maliput/common/assertion_error.h>
-#include <maliput/test_utilities/check_id_indexing.h>
-#include <maliput/test_utilities/maliput_types_compare.h>
 
+#include "assert_compare.h"
 #include "maliput_dragway/branch_point.h"
 #include "maliput_dragway/junction.h"
 #include "maliput_dragway/lane.h"
@@ -45,6 +45,8 @@
 namespace maliput {
 namespace dragway {
 namespace {
+
+using maliput::dragway::test::AssertCompare;
 
 // To understand the characteristics of the geometry, consult the
 // dragway::Segment and dragway::Lane detailed class overview docs.
@@ -118,8 +120,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
     // Tests Lane::lane_bounds().
     for (double s = 0; s < length_; s += length_ / 100) {
       const api::RBounds lane_bounds = lane->lane_bounds(s);
-      EXPECT_TRUE(
-          api::test::IsRBoundsClose(lane_bounds, api::RBounds(-lane_width_ / 2, lane_width_ / 2), kLinearTolerance));
+      EXPECT_TRUE(AssertCompare(
+          api::IsRBoundsClose(lane_bounds, api::RBounds(-lane_width_ / 2, lane_width_ / 2), kLinearTolerance)));
     }
 
     EXPECT_EQ(lane->length(), length_);
@@ -127,8 +129,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
     // Tests Lane::segment_bounds().
     for (double s = 0; s < length_; s += length_ / 100) {
       const api::RBounds segment_bounds = lane->segment_bounds(s);
-      EXPECT_TRUE(api::test::IsRBoundsClose(
-          segment_bounds, api::RBounds(expected.segment_r_min, expected.segment_r_max), kLinearTolerance));
+      EXPECT_TRUE(AssertCompare(api::IsRBoundsClose(
+          segment_bounds, api::RBounds(expected.segment_r_min, expected.segment_r_max), kLinearTolerance)));
     }
 
     // Tests Lane::elevation_bounds().
@@ -136,10 +138,10 @@ class MaliputDragwayLaneTest : public ::testing::Test {
       const api::RBounds segment_bounds = lane->segment_bounds(s);
       const api::HBounds elevation_bounds0 = lane->elevation_bounds(s, segment_bounds.min());
       const api::HBounds elevation_bounds1 = lane->elevation_bounds(s, segment_bounds.max());
-      EXPECT_TRUE(api::test::IsHBoundsClose(
-          elevation_bounds0, api::HBounds(expected.elevation_min, expected.elevation_max), kLinearTolerance));
-      EXPECT_TRUE(api::test::IsHBoundsClose(
-          elevation_bounds1, api::HBounds(expected.elevation_min, expected.elevation_max), kLinearTolerance));
+      EXPECT_TRUE(AssertCompare(api::IsHBoundsClose(
+          elevation_bounds0, api::HBounds(expected.elevation_min, expected.elevation_max), kLinearTolerance)));
+      EXPECT_TRUE(AssertCompare(api::IsHBoundsClose(
+          elevation_bounds1, api::HBounds(expected.elevation_min, expected.elevation_max), kLinearTolerance)));
     }
 
     // The following block of test code evaluates methods that take as input a
@@ -165,7 +167,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
 
           // Tests Lane::GetOrientation().
           const api::Rotation rotation = lane->GetOrientation(lane_position);
-          EXPECT_TRUE(api::test::IsRotationClose(rotation, api::Rotation::FromRpy(0.0, 0.0, 0.0), kAngularTolerance));
+          EXPECT_TRUE(
+              AssertCompare(api::IsRotationClose(rotation, api::Rotation::FromRpy(0.0, 0.0, 0.0), kAngularTolerance)));
 
           // Tests Lane::EvalMotionDerivatives().
           //
@@ -178,8 +181,8 @@ class MaliputDragwayLaneTest : public ::testing::Test {
 
           const api::LanePosition motion_derivatives =
               lane->EvalMotionDerivatives(lane_position, api::IsoLaneVelocity(kSigma_v, kRho_v, kEta_v));
-          EXPECT_TRUE(api::test::IsLanePositionClose(motion_derivatives, api::LanePosition(kSigma_v, kRho_v, kEta_v),
-                                                     kLinearTolerance));
+          EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
+              motion_derivatives, api::LanePosition(kSigma_v, kRho_v, kEta_v), kLinearTolerance)));
         }
       }
     }
@@ -338,7 +341,8 @@ TEST_F(MaliputDragwayLaneTest, SingleLane) {
 
   VerifyLaneCorrectness(lane_, kNumLanes);
   VerifyBranches(lane_, road_geometry_.get());
-  EXPECT_TRUE(api::test::CheckIdIndexing(road_geometry_.get()));
+  const auto check_id_indexing = api::CheckIdIndexing(road_geometry_.get());
+  EXPECT_FALSE(check_id_indexing.has_value()) << check_id_indexing.value();
 }
 
 /*
@@ -372,7 +376,8 @@ TEST_F(MaliputDragwayLaneTest, TwoLaneDragway) {
     VerifyLaneCorrectness(lane, kNumLanes);
     VerifyBranches(lane, road_geometry_.get());
   }
-  EXPECT_TRUE(api::test::CheckIdIndexing(road_geometry_.get()));
+  const auto check_id_indexing = api::CheckIdIndexing(road_geometry_.get());
+  EXPECT_FALSE(check_id_indexing.has_value()) << check_id_indexing.value();
 }
 
 // Tests dragway::RoadGeometry::ToRoadPosition() using a two-lane dragway where
@@ -390,12 +395,12 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOnRoad) {
       for (double z = 0; z <= maximum_height_; z += maximum_height_ / 2.) {
         const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::InertialPosition(x, y, z));
         const api::Lane* expected_lane = road_geometry_->junction(0)->segment(0)->lane(0);
-        EXPECT_TRUE(api::test::IsInertialPositionClose(result.nearest_position, api::InertialPosition(x, y, z),
-                                                       kLinearTolerance));
+        EXPECT_TRUE(AssertCompare(
+            api::IsInertialPositionClose(result.nearest_position, api::InertialPosition(x, y, z), kLinearTolerance)));
         EXPECT_DOUBLE_EQ(result.distance, 0);
         EXPECT_EQ(result.road_position.lane, expected_lane);
-        EXPECT_TRUE(api::test::IsLanePositionClose(result.road_position.pos,
-                                                   api::LanePosition(x, y + lane_width_ / 2, z), kLinearTolerance));
+        EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
+            result.road_position.pos, api::LanePosition(x, y + lane_width_ / 2, z), kLinearTolerance)));
       }
     }
   }
@@ -408,16 +413,16 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOnRoad) {
         const api::RoadPositionResult result = road_geometry_->ToRoadPosition(api::InertialPosition(x, y, z));
         const int lane_index = (y == 0 ? 0 : 1);
         const api::Lane* expected_lane = road_geometry_->junction(0)->segment(0)->lane(lane_index);
-        EXPECT_TRUE(api::test::IsInertialPositionClose(result.nearest_position, api::InertialPosition(x, y, z),
-                                                       kLinearTolerance));
+        EXPECT_TRUE(AssertCompare(
+            api::IsInertialPositionClose(result.nearest_position, api::InertialPosition(x, y, z), kLinearTolerance)));
         EXPECT_DOUBLE_EQ(result.distance, 0);
         EXPECT_EQ(result.road_position.lane, expected_lane);
         if (y == 0) {
-          EXPECT_TRUE(api::test::IsLanePositionClose(result.road_position.pos,
-                                                     api::LanePosition(x, y + lane_width_ / 2, z), kLinearTolerance));
+          EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
+              result.road_position.pos, api::LanePosition(x, y + lane_width_ / 2, z), kLinearTolerance)));
         } else {
-          EXPECT_TRUE(api::test::IsLanePositionClose(result.road_position.pos,
-                                                     api::LanePosition(x, y - lane_width_ / 2, z), kLinearTolerance));
+          EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
+              result.road_position.pos, api::LanePosition(x, y - lane_width_ / 2, z), kLinearTolerance)));
         }
       }
     }
@@ -491,19 +496,19 @@ TEST_F(MaliputDragwayLaneTest, TestToRoadPositionOffRoad) {
           expected_nearest_position.set_z(z_max);
         }
 
-        EXPECT_TRUE(
-            api::test::IsInertialPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance));
+        EXPECT_TRUE(AssertCompare(
+            api::IsInertialPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance)));
         // TODO(maddog@tri.global)  Should test for explicit correct distance.
         EXPECT_LT(0, result.distance);
         const int expected_lane_index = (y > 0 ? 1 : 0);
         const Lane* expected_lane =
             dynamic_cast<const Lane*>(road_geometry_->junction(0)->segment(0)->lane(expected_lane_index));
         EXPECT_EQ(result.road_position.lane, expected_lane);
-        EXPECT_TRUE(api::test::IsLanePositionClose(
+        EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
             result.road_position.pos,
             api::LanePosition(expected_nearest_position.x(), expected_nearest_position.y() - expected_lane->y_offset(),
                               expected_nearest_position.z()),
-            kLinearTolerance));
+            kLinearTolerance)));
       }
     }
   }
@@ -539,15 +544,15 @@ TEST_F(MaliputDragwayLaneTest, TestToSegmentPosition) {
           expected_nearest_position.set_z(max_z_);
         }
 
-        EXPECT_TRUE(
-            api::test::IsInertialPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance));
+        EXPECT_TRUE(AssertCompare(
+            api::IsInertialPositionClose(result.nearest_position, expected_nearest_position, kLinearTolerance)));
         // TODO(maddog@tri.global)  Should test for explicit correct distance.
         EXPECT_GE(result.distance, 0);
-        EXPECT_TRUE(api::test::IsLanePositionClose(
+        EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
             result.lane_position,
             api::LanePosition(expected_nearest_position.x(), expected_nearest_position.y() - lane_->y_offset(),
                               expected_nearest_position.z()),
-            kLinearTolerance));
+            kLinearTolerance)));
       }
     }
   }
@@ -752,10 +757,10 @@ TEST_P(MaliputDragwayFindRoadPositionTest, FindRoadPositionsWithOneLane) {
   // Evaluates RoadPosition matching.
   for (const api::RoadPositionResult& dut : road_position_results) {
     EXPECT_TRUE(expected_results_.find(dut.road_position.lane->id()) != expected_results_.end());
-    EXPECT_TRUE(api::test::IsLanePositionClose(
-        dut.road_position.pos, expected_results_[dut.road_position.lane->id()].lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(
-        dut.nearest_position, expected_results_[dut.road_position.lane->id()].nearest_position, kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(api::IsLanePositionClose(
+        dut.road_position.pos, expected_results_[dut.road_position.lane->id()].lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(
+        dut.nearest_position, expected_results_[dut.road_position.lane->id()].nearest_position, kLinearTolerance)));
     EXPECT_NEAR(dut.distance, expected_results_[dut.road_position.lane->id()].distance, kLinearTolerance);
   }
 }
@@ -784,25 +789,27 @@ class DragwayWithInertialToBackendFrameTranslation : public ::testing::Test {
 };
 
 TEST_F(DragwayWithInertialToBackendFrameTranslation, ToInertialPosition) {
-  EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5),
-                                                 lane_->ToInertialPosition({0., 0., 0.}), kLinearTolerance));
-  EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5),
-                                                 lane_->ToInertialPosition({10., 0., 0.}), kLinearTolerance));
+  EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5),
+                                                         lane_->ToInertialPosition({0., 0., 0.}), kLinearTolerance)));
+  EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5),
+                                                         lane_->ToInertialPosition({10., 0., 0.}), kLinearTolerance)));
 }
 
 TEST_F(DragwayWithInertialToBackendFrameTranslation, ToSegmentPosition) {
   {
     const api::LanePositionResult result = lane_->ToSegmentPosition({1.2, -3.4, 0.5});
-    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(0., 0., 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(
+        AssertCompare(api::IsLanePositionClose(api::LanePosition(0., 0., 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5),
+                                                           result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
   }
   {
     const api::LanePositionResult result = lane_->ToSegmentPosition({11.2, -3.4, 0.5});
-    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(10., 0., 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(10., 0., 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5),
+                                                           result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
   }
 }
@@ -811,19 +818,19 @@ TEST_F(DragwayWithInertialToBackendFrameTranslation, ToRoadPosition) {
   {
     const api::RoadPositionResult result = dut_.ToRoadPosition({1.2, -3.4, 0.5}, std::nullopt);
     EXPECT_EQ(lane_, result.road_position.lane);
-    EXPECT_TRUE(
-        api::test::IsLanePositionClose(api::LanePosition(0., 0., 0.), result.road_position.pos, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(0., 0., 0.), result.road_position.pos, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(api::InertialPosition(1.2, -3.4, 0.5),
+                                                           result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
   }
   {
     const api::RoadPositionResult result = dut_.ToRoadPosition({11.2, -3.4, 0.5});
     EXPECT_EQ(lane_, result.road_position.lane);
-    EXPECT_TRUE(
-        api::test::IsLanePositionClose(api::LanePosition(10., 0., 0.), result.road_position.pos, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(10., 0., 0.), result.road_position.pos, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(api::IsInertialPositionClose(api::InertialPosition(11.2, -3.4, 0.5),
+                                                           result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
   }
 }
@@ -852,45 +859,49 @@ TEST_F(DragwayToLaneAndSegmentPositionTest, ToLanePosition) {
   {
     // Out of the segment bounds.
     api::LanePositionResult result = lane_->ToLanePosition({5., 45., 0.});
-    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(
+        api::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(50., result.distance, kLinearTolerance);
 
     result = lane_->ToSegmentPosition({5., 45., 0.});
-    EXPECT_TRUE(
-        api::test::IsLanePositionClose(api::LanePosition(5., 17.5, 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(5., 10., 0.), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(5., 17.5, 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(
+        api::IsInertialPositionClose(api::InertialPosition(5., 10., 0.), result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(35., result.distance, kLinearTolerance);
   }
   {
     // Out of the lane bounds, within segment bounds
     api::LanePositionResult result = lane_->ToLanePosition({5., 5., 0.});
-    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(
+        api::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(10., result.distance, kLinearTolerance);
 
     result = lane_->ToSegmentPosition({5., 5., 0.});
-    EXPECT_TRUE(
-        api::test::IsLanePositionClose(api::LanePosition(5., 12.5, 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(5., 5., 0.), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(5., 12.5, 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(
+        api::IsInertialPositionClose(api::InertialPosition(5., 5., 0.), result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
   }
   {
     // Within the lane bounds.
     api::LanePositionResult result = lane_->ToLanePosition({5., -5., 0.});
-    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(
+        api::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
 
     result = lane_->ToSegmentPosition({5., -5., 0.});
-    EXPECT_TRUE(api::test::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance));
-    EXPECT_TRUE(api::test::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position,
-                                                   kLinearTolerance));
+    EXPECT_TRUE(AssertCompare(
+        api::IsLanePositionClose(api::LanePosition(5., 2.5, 0.), result.lane_position, kLinearTolerance)));
+    EXPECT_TRUE(AssertCompare(
+        api::IsInertialPositionClose(api::InertialPosition(5., -5., 0.), result.nearest_position, kLinearTolerance)));
     EXPECT_NEAR(0., result.distance, kLinearTolerance);
   }
 }

@@ -8,6 +8,7 @@ macro(add_dependencies_to_test target)
       target_include_directories(${target}
         PRIVATE
           ${PROJECT_SOURCE_DIR}/include
+          ${PROJECT_SOURCE_DIR}/test
       )
 
       # To avoid a false positive when running ubsan the symbols must be exported
@@ -26,7 +27,6 @@ macro(add_dependencies_to_test target)
       target_link_libraries(${target}
           maliput_dragway::maliput_dragway
           maliput::plugin
-          maliput::test_utilities
       )
     endif()
 endmacro()

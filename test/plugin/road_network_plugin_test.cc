@@ -34,22 +34,26 @@
 #include <string>
 
 #include <gtest/gtest.h>
+#include <maliput/api/compare.h>
 #include <maliput/api/junction.h>
 #include <maliput/api/lane.h>
 #include <maliput/api/lane_data.h>
 #include <maliput/api/road_geometry.h>
 #include <maliput/api/road_network.h>
 #include <maliput/api/segment.h>
+#include <maliput/math/compare.h>
 #include <maliput/plugin/maliput_plugin.h>
 #include <maliput/plugin/maliput_plugin_manager.h>
 #include <maliput/plugin/maliput_plugin_type.h>
 #include <maliput/plugin/road_network_loader.h>
-#include <maliput/test_utilities/maliput_math_compare.h>
-#include <maliput/test_utilities/maliput_types_compare.h>
+
+#include "assert_compare.h"
 
 namespace maliput {
 namespace dragway {
 namespace {
+
+using maliput::dragway::test::AssertCompare;
 
 GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
   setenv("MALIPUT_PLUGIN_PATH", DEF_ROAD_NETWORK_PLUGIN, 1);
@@ -81,8 +85,8 @@ GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
   ASSERT_NE(nullptr, rn);
   const api::RoadGeometry* dragway_rg = rn->road_geometry();
   EXPECT_NE(nullptr, dragway_rg);
-  EXPECT_TRUE(math::test::CompareVectors(math::Vector3{1., 2.5, -4.7},
-                                         dragway_rg->inertial_to_backend_frame_translation(), kTolerance));
+  EXPECT_TRUE(AssertCompare(maliput::math::CompareVectors(
+      math::Vector3{1., 2.5, -4.7}, dragway_rg->inertial_to_backend_frame_translation(), kTolerance)));
   const api::Junction* junction = dragway_rg->junction(0);
   ASSERT_NE(nullptr, junction);
   const api::Segment* segment = junction->segment(0);
@@ -91,10 +95,10 @@ GTEST_TEST(RoadNetworkLoader, VerifyRoadNetworkPlugin) {
   const api::Lane* lane = segment->lane(0);
   ASSERT_NE(nullptr, lane);
   EXPECT_EQ(10., lane->length());
-  EXPECT_TRUE(api::test::IsRBoundsClose(api::RBounds(-3.7 / 2, 3.7 / 2), lane->lane_bounds(0.), kTolerance));
-  EXPECT_TRUE(
-      api::test::IsRBoundsClose(api::RBounds(-3.7 / 2 - 3., 3.7 / 2 + 3.7 + 3.), lane->segment_bounds(0.), kTolerance));
-  EXPECT_TRUE(api::test::IsHBoundsClose(api::HBounds(0., 5.2), lane->elevation_bounds(0., 0.), kTolerance));
+  EXPECT_TRUE(AssertCompare(api::IsRBoundsClose(api::RBounds(-3.7 / 2, 3.7 / 2), lane->lane_bounds(0.), kTolerance)));
+  EXPECT_TRUE(AssertCompare(
+      api::IsRBoundsClose(api::RBounds(-3.7 / 2 - 3., 3.7 / 2 + 3.7 + 3.), lane->segment_bounds(0.), kTolerance)));
+  EXPECT_TRUE(AssertCompare(api::IsHBoundsClose(api::HBounds(0., 5.2), lane->elevation_bounds(0., 0.), kTolerance)));
 }
 
 }  // namespace
