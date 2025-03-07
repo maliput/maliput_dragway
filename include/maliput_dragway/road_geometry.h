@@ -118,6 +118,10 @@ class RoadGeometry final : public api::RoadGeometry {
     return inertial_to_backend_frame_translation_;
   }
 
+  std::string DoBackendCustomCommand(const std::string& command) const override {
+    MALIPUT_THROW_MESSAGE("Method not implemented by maliput_dragway.");
+  }
+
   // Returns true iff `inertial_pos` is "on" the dragway. It is on the dragway iff
   // `inertial_pos.x` and `inertial_pos.y` fall within the dragway's segment surface.
   bool IsInertialPositionOnDragway(const api::InertialPosition& inertial_pos) const;
