@@ -123,7 +123,9 @@ class RoadGeometry final : public api::RoadGeometry {
   }
 
   // TODO(slopez) Needs implementation.
-  std::string DoGeoReferenceInfo() const override { return {}; }
+  std::string DoGeoReferenceInfo() const override {
+    MALIPUT_THROW_MESSAGE("Method not implemented by maliput_dragway.");
+  }
 
   // Returns true iff `inertial_pos` is "on" the dragway. It is on the dragway iff
   // `inertial_pos.x` and `inertial_pos.y` fall within the dragway's segment surface.
