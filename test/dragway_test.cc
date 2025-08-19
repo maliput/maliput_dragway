@@ -34,7 +34,7 @@
 
 #include <gtest/gtest.h>
 #include <maliput/api/compare.h>
-#include <maliput/common/assertion_error.h>
+#include <maliput/common/error.h>
 
 #include "assert_compare.h"
 #include "maliput_dragway/branch_point.h"
