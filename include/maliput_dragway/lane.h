@@ -172,6 +172,9 @@ class Lane final : public api::Lane {
 
   api::HBounds do_elevation_bounds(double, double) const final;
 
+  // TODO(Santoi): Implement after supporting different types of lanes.
+  api::LaneType do_type() const final { return api::LaneType::kUnknown; }
+
   api::LanePosition DoEvalMotionDerivatives(const api::LanePosition& position,
                                             const api::IsoLaneVelocity& velocity) const final;
 
