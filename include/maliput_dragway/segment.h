@@ -114,6 +114,8 @@ class Segment final : public api::Segment {
 
   const api::Lane* do_lane(int index) const final;
 
+  const api::LaneBoundary* do_boundary(int index) const final { return nullptr; }
+
   const api::SegmentId id_;
   const Junction* junction_{};
   std::vector<std::unique_ptr<Lane>> lanes_;
