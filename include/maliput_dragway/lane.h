@@ -182,6 +182,8 @@ class Lane final : public api::Lane {
 
   api::Rotation DoGetOrientation(const api::LanePosition& lane_pos) const final;
 
+  double DoGetCurvature(const api::LanePosition& lane_pos) const final;
+
   api::LanePositionResult DoToLanePosition(const api::InertialPosition& inertial_pos) const final;
 
   api::LanePositionResult DoToSegmentPosition(const api::InertialPosition& inertial_pos) const final;
