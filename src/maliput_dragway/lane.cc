@@ -107,6 +107,11 @@ api::Rotation Lane::DoGetOrientation(const api::LanePosition&) const {
   return api::Rotation();  // Default is Identity.
 }
 
+double Lane::DoGetCurvature(const api::LanePosition& lane_pos) const {
+  // In a dragway, the curvature is always zero.
+  return 0.;
+}
+
 api::LanePositionResult Lane::DoToLanePosition(const api::InertialPosition& inertial_pos) const {
   return InertialToLaneSegmentPositionBackend(inertial_pos, true);
 }
