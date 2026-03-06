@@ -127,7 +127,8 @@ class RoadGeometry final : public api::RoadGeometry {
     MALIPUT_THROW_MESSAGE("Method not implemented by maliput_dragway.");
   }
 
-  std::vector<api::RoadPositionResult> DoFindSurfaceRoadPositionsAtXY(double x, double y, double radius) const override {
+  std::vector<api::RoadPositionResult> DoFindSurfaceRoadPositionsAtXY(double x, double y,
+                                                                      double radius) const override {
     MALIPUT_THROW_MESSAGE("Method not implemented.");
   }
 
